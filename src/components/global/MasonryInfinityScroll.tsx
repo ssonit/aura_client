@@ -21,7 +21,7 @@ const MasonryInfinityScroll = ({ initData }: { initData: Photo[] }) => {
   useEffect(() => {
     if (inView && !isLoading) {
       setIsLoading(true);
-      fetchPins(page).then((res) => {
+      fetchPins(page, 10).then((res) => {
         setData((prev) => [...prev, ...res]);
         page++;
         setIsLoading(false);
