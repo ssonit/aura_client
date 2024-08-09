@@ -5,5 +5,6 @@ export interface Photo {
   height: number;
   url: string;
   download_url: string;
+  placeholder?: string;
 }
 export type TPinCard = JSX.Element;

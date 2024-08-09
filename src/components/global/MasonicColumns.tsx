@@ -6,11 +6,9 @@ import PinCard from "./PinCard";
 import { Photo } from "@/types/pin";
 import { dynamicBlurDataUrl } from "@/utils/helpers";
 
-type Item = Photo & { placeholder: string };
-
 const MasonicColumns = ({ data }: { data: Photo[] }) => {
   const [isClient, setIsClient] = useState(false);
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<Photo[]>([]);
 
   useEffect(() => {
     setIsClient(true);
@@ -27,8 +25,6 @@ const MasonicColumns = ({ data }: { data: Photo[] }) => {
     }
     fetchData();
   }, [data]);
-
-  console.log(items, "items");
 
   return (
     <>

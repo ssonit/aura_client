@@ -1,5 +1,7 @@
 "use server";
 
+import { Photo } from "@/types/pin";
+
 export const fetchPins = async (page: number, limit: number = 10) => {
   const res = await fetch(
     "https://picsum.photos/v2/list?" +
@@ -13,5 +15,5 @@ export const fetchPins = async (page: number, limit: number = 10) => {
   );
   const data = await res.json();
 
-  return data;
+  return data as Photo[];
 };

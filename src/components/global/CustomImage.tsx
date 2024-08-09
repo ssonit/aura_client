@@ -7,9 +7,11 @@ interface Props {
   src: string;
   alt: string;
   placeholder?: string;
+  width?: number;
+  height?: number;
 }
 
-const CustomImage = ({ src, alt, placeholder }: Props) => {
+const CustomImage = ({ src, alt, placeholder, width, height }: Props) => {
   return (
     <div className="relative w-full">
       <Image
@@ -17,15 +19,15 @@ const CustomImage = ({ src, alt, placeholder }: Props) => {
         alt={alt}
         sizes="(max-width: 50px) 2vw, (max-width: 425px) 50vw, 75vw"
         quality={75}
-        width={100}
-        height={150}
+        width={width || 257}
+        height={height || 171}
         loading="lazy"
         placeholder="blur"
         blurDataURL={placeholder || staticBlurDataUrl()}
+        className="image"
         style={{
           position: "relative",
           width: "100%",
-          height: "100%",
         }}
       />
     </div>

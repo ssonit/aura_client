@@ -3,11 +3,11 @@ import { EyeIcon, SaveIcon, ShareIcon } from "lucide-react";
 import CustomImage from "./CustomImage";
 import { Photo } from "@/types/pin";
 
-interface Prop {
-  item: Photo & { placeholder?: string };
+interface Props {
+  item: Photo;
 }
 
-const PinCard = ({ item }: Prop) => {
+const PinCard = ({ item }: Props) => {
   return (
     <div className="w-full" id="pin_card">
       <div className="relative group overflow-hidden rounded-2xl cursor-pointer">
@@ -16,6 +16,8 @@ const PinCard = ({ item }: Prop) => {
             src={item.download_url}
             alt={item.id}
             placeholder={item.placeholder}
+            width={item.width}
+            height={item.height}
           ></CustomImage>
         </div>
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
