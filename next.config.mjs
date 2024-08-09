@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    formats: ["image/avif", "image/webp"],
     domains: [
       "utfs.io",
       "img.clerk.com",

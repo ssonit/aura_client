@@ -12,7 +12,6 @@ const MasonryInfinityScroll = ({ initData }: { initData: Photo[] }) => {
   const { ref, inView } = useInView({
     threshold: 0.5,
     delay: 500,
-    rootMargin: "100px",
   });
 
   const [data, setData] = useState<Photo[]>(initData);
@@ -32,7 +31,7 @@ const MasonryInfinityScroll = ({ initData }: { initData: Photo[] }) => {
 
   return (
     <div className="w-full">
-      <MasonicColumns data={data}></MasonicColumns>
+      <MasonicColumns data={data} />
       <section className="flex justify-center items-center w-full mt-20">
         <div ref={ref}>
           {isLoading && (

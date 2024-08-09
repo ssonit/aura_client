@@ -145,15 +145,3 @@
     transform: scale(1);
   }
 }
-
-.pin_container {
-  /* columns-1 gap-4 sm:columns-2 lg:columns-3 xl:columns-5 mx-2  */
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(236px, 1fr));
-  gap: 16px;
-  grid-auto-rows: minmax(min-content, auto);
-}
-
-.pin_container > #pin_card:not(:first-child) {
-  margin-top: 16px;
-}

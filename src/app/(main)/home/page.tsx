@@ -8,7 +8,7 @@ import Link from "next/link";
 const HomePage = async () => {
   const data = await fetchPins(1, 20);
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <header className="bg-background border-b px-4 md:px-6 py-3 flex items-center justify-between">
         <Link
           href="#"
@@ -45,7 +45,7 @@ const HomePage = async () => {
           </div>
         </div>
       </header>
-      <main className="bg-muted/40 py-6 md:py-12">
+      <main className="bg-muted/40 py-6 md:py-12 flex-1">
         <div className="container mx-auto md:px-6">
           <MasonryInfinityScroll initData={data} />
         </div>
