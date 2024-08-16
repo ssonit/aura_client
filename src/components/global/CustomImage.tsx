@@ -1,6 +1,5 @@
 "use client";
 
-import { staticBlurDataUrl } from "@/utils/helpers";
 import Image from "next/image";
 
 interface Props {
@@ -23,7 +22,7 @@ const CustomImage = ({ src, alt, placeholder, width, height }: Props) => {
         height={height || 171}
         loading="lazy"
         placeholder="blur"
-        blurDataURL={placeholder || staticBlurDataUrl()}
+        blurDataURL={placeholder}
         className="image"
         style={{
           position: "relative",
