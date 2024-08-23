@@ -44,3 +44,17 @@ export function staticBlurDataUrl() {
 
   return `data:image/svg+xml;base64,${toBase64(blurSvg)}`;
 }
+
+export const isImageURL = (url: string) => {
+  const imageExtensions = [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".webp",
+    ".svg",
+  ];
+
+  return imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
+};

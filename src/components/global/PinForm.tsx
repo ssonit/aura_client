@@ -1,0 +1,233 @@
+"use client";
+
+import { useRef, useState } from "react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { ImageIcon, LinkIcon } from "lucide-react";
+import ImagePreview from "./ImagePreview";
+import { isImageURL } from "@/utils/helpers";
+
+const formSchema = z.object({
+  title: z.string().min(2).max(50),
+  description: z.string().max(500),
+  imageUrl: z.string(),
+  linkUrl: z.string().url().optional(),
+  selectedBoard: z.string().optional(),
+});
+
+const boards = [
+  { id: "1", name: "Travel" },
+  { id: "2", name: "Recipes" },
+  { id: "3", name: "DIY Projects" },
+  { id: "5", name: "Fashion" },
+];
+
+interface Props {
+  initData?: z.infer<typeof formSchema>;
+}
+
+const PinForm = ({ initData }: Props) => {
+  const [isUrlInput, setIsUrlInput] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const defaultValues = initData
+    ? {
+        title: initData.title,
+        description: initData.description,
+        imageUrl: initData.imageUrl,
+        linkUrl: initData.linkUrl,
+        selectedBoard: initData.selectedBoard,
+      }
+    : {
+        title: "",
+        description: "",
+        imageUrl: "",
+        linkUrl: "",
+        selectedBoard: "",
+      };
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues,
+  });
+
+  const handleRemoveImage = () => {
+    setFile(null);
+    form.setValue("imageUrl", "");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleSelectFile = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log({ ...values, file });
+  }
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="gap-8 flex justify-start "
+      >
+        <div className="space-y-2 flex-[2]">
+          <FormField
+            control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="imageInput">Image</Label>
+                  <div className="flex items-center space-x-2">
+                    <ImageIcon className="h-4 w-4" />
+                    <Switch
+                      id="image-input-mode"
+                      checked={isUrlInput}
+                      onCheckedChange={(checked) => {
+                        setIsUrlInput(checked);
+                        handleRemoveImage();
+                      }}
+                    />
+                    <LinkIcon className="h-4 w-4" />
+                  </div>
+                </div>
+                <div className="mt-2">
+                  <ImagePreview
+                    url={form.getValues("imageUrl")}
+                    onSelectFile={isUrlInput ? () => {} : handleSelectFile}
+                    onRemove={handleRemoveImage}
+                  />
+                </div>
+                <FormControl>
+                  {isUrlInput ? (
+                    <Input
+                      placeholder="Enter the image URL"
+                      onChange={(e) => {
+                        const url = e.target.value;
+                        if (
+                          url.startsWith("http") ||
+                          url.startsWith("https") ||
+                          isImageURL(url)
+                        ) {
+                          setFile(null);
+                          field.onChange(url);
+                        }
+                      }}
+                    />
+                  ) : (
+                    <Input
+                      id="imageFile"
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const url = URL.createObjectURL(file);
+                          field.onChange(url);
+                          setFile(file);
+                        }
+                      }}
+                    />
+                  )}
+                </FormControl>
+              </FormItem>
+            )}
+          ></FormField>
+        </div>
+        <div className="space-y-4 flex-[3]">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Title</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter a title for your pin" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Describe your pin"
+                    {...field}
+                    className="resize-none"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="linkUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Link URL</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter the destination link" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="selectedBoard"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Board</FormLabel>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a board" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {boards.map((board) => (
+                      <SelectItem key={board.id} value={board.id}>
+                        {board.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+          <div className="text-center">
+            <Button type="submit">Submit</Button>
+          </div>
+        </div>
+      </form>
+    </Form>
+  );
+};
+
+export default PinForm;
