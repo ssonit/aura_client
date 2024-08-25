@@ -1,3 +1,4 @@
+import AppContextProvider from "@/contexts/app-provider";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { Metadata } from "next";
@@ -23,7 +24,7 @@ export default function RootLayout({
           font.className
         )}
       >
-        {children}
+        <AppContextProvider>{children}</AppContextProvider>
       </body>
     </html>
   );

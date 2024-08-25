@@ -22,6 +22,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useAppContext } from "@/contexts/app-provider";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -29,7 +30,7 @@ const FormSchema = z.object({
 });
 
 const AddBoardModal = () => {
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const { isModalOpen, handleModalOpen } = useAppContext();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -41,7 +42,7 @@ const AddBoardModal = () => {
     console.log(data);
   }
   return (
-    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+    <Dialog open={isModalOpen} onOpenChange={handleModalOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add New Board</DialogTitle>

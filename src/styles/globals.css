@@ -145,3 +145,14 @@
     transform: scale(1);
   }
 }
+
+body[data-scroll-locked] {
+  overflow: scroll !important;
+  overscroll-behavior: none;
+  --removed-body-scroll-bar-size: 0;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}

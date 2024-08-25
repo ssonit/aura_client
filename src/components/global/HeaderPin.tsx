@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ImageIcon, SearchIcon, UploadIcon } from "lucide-react";
 import Link from "next/link";
+import HeaderAvatar from "./HeaderAvatar";
 
 const HeaderPin = () => {
   return (
@@ -33,11 +34,13 @@ const HeaderPin = () => {
         </form>
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon">
-            <Link href="/pin/create" prefetch={false}>
+            <Link href="/pin/creation" prefetch={false}>
               <UploadIcon className="w-5 h-5" />
               <span className="sr-only">Upload</span>
             </Link>
           </Button>
+          <HeaderAvatar></HeaderAvatar>
+          {/* <div>
           <Button variant="outline">
             <Link href="/login" prefetch={false}>
               Sign In
@@ -48,6 +51,7 @@ const HeaderPin = () => {
               Sign Up
             </Link>
           </Button>
+          </div> */}
         </div>
       </div>
     </header>

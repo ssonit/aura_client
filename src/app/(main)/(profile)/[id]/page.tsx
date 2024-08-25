@@ -1,7 +1,8 @@
 import AddBoardModal from "@/components/global/AddBoardModal";
+import ProfileActions from "@/components/profile/ProfileActions";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
-import { Share2, MoreHorizontal, Plus, Pen, Settings2 } from "lucide-react";
+import { Share2, MoreHorizontal, Pen } from "lucide-react";
 import Image from "next/image";
 
 const ProfilePage = () => {
@@ -33,7 +34,7 @@ const ProfilePage = () => {
               <span className="font-semibold">843</span> following
             </div>
           </div>
-          <div className="flex justify-center space-x-2 mt-4">
+          <div className="flex justify-center items-center space-x-2 mt-4">
             <Button>Follow</Button>
             <Button variant="outline">
               <Share2 className="h-4 w-4 mr-2" />
@@ -46,14 +47,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between my-4">
-          <Button variant={"ghost"} size={"icon"} className="rounded-full">
-            <Settings2 className="w-6 h-6"></Settings2>
-          </Button>
-          <Button variant={"ghost"} size={"icon"} className="rounded-full">
-            <Plus className="w-6 h-6"></Plus>
-          </Button>
-        </div>
+        <ProfileActions></ProfileActions>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {[...Array(12)].map((_, i) => (
@@ -66,7 +60,7 @@ const ProfilePage = () => {
                   <Image
                     alt={`Pin ${i + 1}`}
                     className="object-cover transition-transform rounded-lg"
-                    layout="fill"
+                    fill
                     src={`https://picsum.photos/seed/${i}/400/400`}
                   />
                 </AspectRatio>

@@ -37,7 +37,7 @@ const DetailPage = () => {
               </Button>
             </div>
 
-            <h1 className="text-3xl font-bold text-muted">
+            <h1 className="text-3xl font-bold text-muted pointer-events-none">
               Beautiful Landscape Photography
             </h1>
 
