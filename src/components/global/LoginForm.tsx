@@ -12,6 +12,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import envConfig from "@/config";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -19,6 +21,7 @@ const formSchema = z.object({
 });
 
 const LoginForm = () => {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -26,8 +29,35 @@ const LoginForm = () => {
       password: "",
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const result = await fetch(
+        `${envConfig.NEXT_PUBLIC_API_ENDPOINT}/user/login`,
+        {
+          method: "POST",
+          body: JSON.stringify(values),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      ).then(async (res) => {
+        const payload = await res.json();
+
+        if (!res.ok) {
+          throw payload;
+        }
+
+        return payload;
+      });
+
+      toast({
+        title: "Login successful",
+      });
+    } catch (error) {
+      toast({
+        title: (error as any)?.message,
+      });
+    }
   }
   return (
     <Form {...form}>
