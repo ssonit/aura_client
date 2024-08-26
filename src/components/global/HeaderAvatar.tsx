@@ -13,7 +13,7 @@ const user = {
   name: "John Doe",
   email: "john.doe@example.com",
   username: "johndoe",
-  avatarUrl: "/placeholder.svg?height=40&width=40",
+  avatarUrl: "",
 };
 
 const HeaderAvatar = () => {

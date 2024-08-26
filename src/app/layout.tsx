@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
+import { cookies } from "next/headers";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -17,6 +18,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = cookies();
+  const sessionToken = cookieStore.get("sessionToken");
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -25,7 +28,9 @@ export default function RootLayout({
           font.className
         )}
       >
-        <AppContextProvider>{children}</AppContextProvider>
+        <AppContextProvider initialSessionToken={sessionToken?.value}>
+          {children}
+        </AppContextProvider>
         <Toaster />
       </body>
     </html>

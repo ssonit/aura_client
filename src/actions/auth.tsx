@@ -1,28 +1,47 @@
-"use server";
-
 import envConfig from "@/config";
 
-const BASE_URL = envConfig.NEXT_PUBLIC_API_ENDPOINT;
+const authApiRequest = {
+  login: async (data: { email: string; password: string }) => {
+    const result = await fetch(
+      `${envConfig.NEXT_PUBLIC_API_ENDPOINT}/user/login`,
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ).then(async (res) => {
+      const payload = await res.json();
 
-export const login = async ({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) => {
-  const res = await fetch(`${BASE_URL}/user/login`, {
-    method: "POST",
-    body: JSON.stringify({
-      email,
-      password,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+      if (!res.ok) {
+        throw payload;
+      }
 
-  const data = await res.json();
+      return payload;
+    });
 
-  return data;
+    return result;
+  },
+  auth: async (data: { token: string }) => {
+    const result = await fetch("/api/auth", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(async (res) => {
+      const payload = await res.json();
+
+      if (!res.ok) {
+        throw payload;
+      }
+
+      return payload;
+    });
+
+    return result;
+  },
 };
+
+export default authApiRequest;

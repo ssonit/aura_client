@@ -14,6 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import envConfig from "@/config";
+import { useAppContext } from "@/contexts/app-provider";
+import authApiRequest from "@/actions/auth";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -21,7 +25,10 @@ const formSchema = z.object({
 });
 
 const LoginForm = () => {
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
+  const { handleSetSessionToken, setUser } = useAppContext();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,34 +36,32 @@ const LoginForm = () => {
       password: "",
     },
   });
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (loading) return;
+    setLoading(true);
     try {
-      const result = await fetch(
-        `${envConfig.NEXT_PUBLIC_API_ENDPOINT}/user/login`,
-        {
-          method: "POST",
-          body: JSON.stringify(values),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      ).then(async (res) => {
-        const payload = await res.json();
+      const result = await authApiRequest.login(values);
 
-        if (!res.ok) {
-          throw payload;
-        }
-
-        return payload;
+      const resultFromNextServer = await authApiRequest.auth({
+        token: result.token,
       });
+
+      handleSetSessionToken(resultFromNextServer.token);
+      setUser(result.data);
 
       toast({
         title: "Login successful",
       });
+
+      router.push("/home");
+      router.refresh();
     } catch (error) {
       toast({
         title: (error as any)?.message,
       });
+    } finally {
+      setLoading(false);
     }
   }
   return (
@@ -93,7 +98,7 @@ const LoginForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="py-5">
+        <Button disabled={loading} type="submit" className="py-5">
           Login
         </Button>
       </form>
