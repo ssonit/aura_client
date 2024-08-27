@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from "lucide-react";
+import LogoutButton from "./LogoutButton";
 
 const user = {
   name: "John Doe",
@@ -28,7 +29,7 @@ const HeaderAvatar = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-56"
+        className="w-72"
         align="end"
         sideOffset={5}
         style={{ zIndex: 1000 }}
@@ -58,7 +59,9 @@ const HeaderAvatar = () => {
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem>Notifications</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-red-600">Log out</DropdownMenuItem>
+        <DropdownMenuItem className="text-red-600 p-0">
+          <LogoutButton></LogoutButton>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -59,7 +59,9 @@ export default function AppContextProvider({
   const isAuthenticated = Boolean(user);
   const setUser = useCallback((user: User | null) => {
     setUserState(user);
-    localStorage.setItem("user", JSON.stringify(user));
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
   }, []);
 
   useEffect(() => {
