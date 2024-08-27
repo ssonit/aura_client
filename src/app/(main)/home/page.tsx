@@ -1,4 +1,4 @@
-import { fetchPins } from "@/actions/pins";
+import { fetchPins, handleListPins } from "@/actions/pins";
 import MasonryInfinityScroll from "@/components/global/MasonryInfinityScroll";
 import { dynamicBlurDataUrl } from "@/utils/helpers";
 
@@ -9,6 +9,9 @@ const HomePage = async () => {
     placeholder: await dynamicBlurDataUrl(item.download_url),
   }));
   const photos = await Promise.all(newData);
+
+  const pins = await handleListPins({ page: 1, limit: 20 });
+  console.log(pins);
   return (
     <main className="bg-muted/40 py-6 md:py-12 flex-1">
       <div className="container mx-auto md:px-6">

@@ -13,7 +13,6 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import envConfig from "@/config";
 import { useAppContext } from "@/contexts/app-provider";
 import authApiRequest from "@/actions/auth";
 import { useState } from "react";
@@ -28,7 +27,7 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const { handleSetSessionToken, setUser } = useAppContext();
+  const { handleSetToken, setUser } = useAppContext();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,7 +46,8 @@ const LoginForm = () => {
         token: result.token,
       });
 
-      handleSetSessionToken(resultFromNextServer.token);
+      handleSetToken(resultFromNextServer.token);
+
       setUser(result.data);
 
       toast({

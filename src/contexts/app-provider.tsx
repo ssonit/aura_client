@@ -6,6 +6,7 @@ import {
   createContext,
   useCallback,
   useEffect,
+  useMemo,
 } from "react";
 
 type User = {
@@ -20,8 +21,8 @@ type User = {
 };
 
 interface AppContextInterface {
-  sessionToken: string;
-  handleSetSessionToken: (token: string) => void;
+  token: string;
+  handleSetToken: (token: string) => void;
   isModalOpen: boolean;
   handleModalOpen: (isOpen: boolean) => void;
   user: User | null;
@@ -30,8 +31,8 @@ interface AppContextInterface {
 }
 
 const initialAppContext: AppContextInterface = {
-  sessionToken: "",
-  handleSetSessionToken: () => {},
+  token: "",
+  handleSetToken: () => {},
   isModalOpen: false,
   handleModalOpen: () => {},
   user: null,
@@ -47,16 +48,16 @@ export const useAppContext = () => {
 
 export default function AppContextProvider({
   children,
-  initialSessionToken = "",
+  initialToken = "",
 }: {
   children: React.ReactNode;
-  initialSessionToken?: string;
+  initialToken?: string;
 }) {
-  const [sessionToken, setSessionToken] = useState(initialSessionToken);
+  const [token, setToken] = useState(initialToken);
   const [isModalOpen, setIsModalOpen] = useState(initialAppContext.isModalOpen);
   const [user, setUserState] = useState<User | null>(initialAppContext.user);
 
-  const isAuthenticated = Boolean(user);
+  const isAuthenticated = useMemo(() => Boolean(user), [user]);
   const setUser = useCallback((user: User | null) => {
     setUserState(user);
     if (user) {
@@ -73,19 +74,19 @@ export default function AppContextProvider({
     setIsModalOpen(isOpen);
   };
 
-  const handleSetSessionToken = (token: string) => {
-    setSessionToken(token);
+  const handleSetToken = (token: string) => {
+    setToken(token);
   };
 
-  console.log({ user, isAuthenticated, sessionToken });
+  console.log({ user, isAuthenticated, token });
 
   return (
     <AppContext.Provider
       value={{
         isModalOpen,
         handleModalOpen,
-        sessionToken,
-        handleSetSessionToken,
+        token,
+        handleSetToken,
         user,
         setUser,
         isAuthenticated,

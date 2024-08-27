@@ -4,7 +4,7 @@ export async function POST(request: Request) {
   return Response.json(res, {
     status: 200,
     headers: {
-      "Set-Cookie": `sessionToken=; Path=/; HttpOnly; Max-Age=0`,
+      "Set-Cookie": `token=; Path=/; HttpOnly; Max-Age=0`,
     },
   });
 }
