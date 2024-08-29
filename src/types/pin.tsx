@@ -1,3 +1,5 @@
+import { User } from "./auth";
+
 export interface Photo {
   id: string;
   author: string;
@@ -13,17 +15,6 @@ interface Media {
   id: string;
   url: string;
   type: string;
-}
-
-interface User {
-  id: string;
-  email: string;
-  username: string;
-  avatar: string;
-  bio: string;
-  website: string;
-  created_at: string;
-  updated_at: string;
 }
 
 interface Pin {

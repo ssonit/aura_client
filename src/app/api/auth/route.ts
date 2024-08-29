@@ -1,3 +1,5 @@
+import { decodeJWT } from "@/utils/helpers";
+
 export async function POST(request: Request) {
   const res = await request.json();
   const { access_token, refresh_token } = res.token;
@@ -13,12 +15,25 @@ export async function POST(request: Request) {
     );
   }
 
+  const expToken = decodeJWT(access_token).exp * 1000;
+  const expRefreshToken = decodeJWT(refresh_token).exp * 1000;
+
+  console.log(
+    new Date(expToken).getHours(),
+    new Date(expToken).getMinutes(),
+    new Date(expToken).getSeconds()
+  );
+
   return Response.json(res, {
     status: 200,
     headers: {
       "Set-Cookie": [
-        `token=${access_token}; Path=/; HttpOnly; SameSite=Lax; Secure`,
-        `refreshToken=${refresh_token}; Path=/; HttpOnly; SameSite=Lax; Secure`,
+        `token=${access_token}; Path=/; HttpOnly; SameSite=Lax; Secure; Expires=${new Date(
+          expToken
+        ).toUTCString()}`,
+        `refreshToken=${refresh_token}; Path=/; HttpOnly; SameSite=Lax; Secure; Expires=${new Date(
+          expRefreshToken
+        ).toUTCString()}`,
       ].join(", "),
     },
   });

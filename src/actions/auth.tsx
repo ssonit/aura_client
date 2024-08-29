@@ -1,4 +1,5 @@
 import envConfig from "@/config";
+import { AuthResponse, Token } from "@/types/auth";
 
 const authApiRequest = {
   login: async (data: { email: string; password: string }) => {
@@ -19,12 +20,14 @@ const authApiRequest = {
       throw payload;
     }
 
-    return payload;
+    return payload as AuthResponse;
   },
-  authTokenNextServer: async (data: { token: string }) => {
+  authTokenNextServer: async (data: Token) => {
     const res = await fetch("/api/auth", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        token: data,
+      }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -109,7 +112,7 @@ const authApiRequest = {
       throw payload;
     }
 
-    return payload;
+    return payload as { token: Token };
   },
 };
 

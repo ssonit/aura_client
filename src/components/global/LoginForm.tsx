@@ -42,9 +42,9 @@ const LoginForm = () => {
     try {
       const result = await authApiRequest.login(values);
 
-      const resultFromNextServer = await authApiRequest.authTokenNextServer({
-        token: result.token,
-      });
+      const resultFromNextServer = await authApiRequest.authTokenNextServer(
+        result.token
+      );
 
       handleSetToken(resultFromNextServer.token.access_token);
       handleSetRefreshToken(resultFromNextServer.token.refresh_token);

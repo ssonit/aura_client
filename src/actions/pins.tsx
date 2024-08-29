@@ -2,6 +2,7 @@
 
 import envConfig from "@/config";
 import { ListPinResponse, Photo } from "@/types/pin";
+import { isTokenExpiringSoon, refreshAndSetToken } from "@/utils/helpers";
 import { cookies } from "next/headers";
 
 const BASE_URL = envConfig.NEXT_PUBLIC_API_ENDPOINT;
@@ -30,7 +31,7 @@ export const handleListPins = async ({
   limit?: number;
 }) => {
   const cookieStore = cookies();
-  const token = cookieStore.get("token")?.value;
+  let access_token = cookieStore.get("token")?.value as string;
 
   const res = await fetch(
     `${BASE_URL}/pin?` +
@@ -41,7 +42,7 @@ export const handleListPins = async ({
     {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${access_token}`,
       },
     }
   );

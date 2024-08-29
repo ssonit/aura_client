@@ -2,8 +2,6 @@ import authApiRequest from "@/actions/auth";
 import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
-  const res = await request.json();
-
   const cookieStore = cookies();
   const refresh_token = cookieStore.get("refreshToken")?.value as string;
   const access_token = cookieStore.get("token")?.value as string;

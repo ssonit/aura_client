@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { cookies } from "next/headers";
-import SlideToken from "@/components/slide-token";
+import SlideToken from "@/components/global/SlideToken";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const cookieStore = cookies();
-  const token = cookieStore.get("token");
+  const access_token = cookieStore.get("token");
   const refresh_token = cookieStore.get("refreshToken");
   return (
     <html lang="en" suppressHydrationWarning>
@@ -31,7 +31,7 @@ export default function RootLayout({
         )}
       >
         <AppContextProvider
-          initialToken={token?.value}
+          initialToken={access_token?.value}
           initialRefreshToken={refresh_token?.value}
         >
           {children}

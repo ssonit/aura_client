@@ -1,3 +1,7 @@
+import authApiRequest from "@/actions/auth";
+import { PayloadToken, Token } from "@/types/auth";
+import jwt from "jsonwebtoken";
+
 const baseURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
@@ -57,4 +61,29 @@ export const isImageURL = (url: string) => {
   ];
 
   return imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
+};
+
+export const decodeJWT = (token: string) => {
+  return jwt.decode(token) as PayloadToken;
+};
+
+export const isTokenExpiringSoon = (token: string) => {
+  const now = new Date();
+  const decodedToken = decodeJWT(token);
+  const bufferTime = now.getTime(); // 5 minutes
+
+  return decodedToken.exp * 1000 <= bufferTime;
+};
+
+export const refreshAndSetToken = async (token: Token) => {
+  const res = await authApiRequest.refreshToken({
+    refresh_token: token.refresh_token,
+  });
+
+  // set token in cookie
+  const result = await authApiRequest.authTokenNextServer(res.token);
+
+  // set token in context
+
+  return result;
 };
