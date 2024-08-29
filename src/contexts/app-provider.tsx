@@ -23,6 +23,8 @@ type User = {
 interface AppContextInterface {
   token: string;
   handleSetToken: (token: string) => void;
+  refreshToken: string;
+  handleSetRefreshToken: (token: string) => void;
   isModalOpen: boolean;
   handleModalOpen: (isOpen: boolean) => void;
   user: User | null;
@@ -33,6 +35,8 @@ interface AppContextInterface {
 const initialAppContext: AppContextInterface = {
   token: "",
   handleSetToken: () => {},
+  refreshToken: "",
+  handleSetRefreshToken: () => {},
   isModalOpen: false,
   handleModalOpen: () => {},
   user: null,
@@ -49,11 +53,14 @@ export const useAppContext = () => {
 export default function AppContextProvider({
   children,
   initialToken = "",
+  initialRefreshToken = "",
 }: {
   children: React.ReactNode;
   initialToken?: string;
+  initialRefreshToken?: string;
 }) {
   const [token, setToken] = useState(initialToken);
+  const [refreshToken, setRefreshToken] = useState(initialRefreshToken);
   const [isModalOpen, setIsModalOpen] = useState(initialAppContext.isModalOpen);
   const [user, setUserState] = useState<User | null>(initialAppContext.user);
 
@@ -78,7 +85,10 @@ export default function AppContextProvider({
     setToken(token);
   };
 
-  console.log({ user, isAuthenticated, token });
+  const handleSetRefreshToken = (token: string) => {
+    setRefreshToken(token);
+  };
+  console.log({ user, isAuthenticated, token, refreshToken });
 
   return (
     <AppContext.Provider
@@ -87,6 +97,8 @@ export default function AppContextProvider({
         handleModalOpen,
         token,
         handleSetToken,
+        refreshToken,
+        handleSetRefreshToken,
         user,
         setUser,
         isAuthenticated,

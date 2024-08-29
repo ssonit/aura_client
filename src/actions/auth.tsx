@@ -38,6 +38,33 @@ const authApiRequest = {
 
     return payload;
   },
+  logoutNextServerToServer: async (data: {
+    refresh_token: string;
+    access_token: string;
+  }) => {
+    // remove token from server
+    const res = await fetch(
+      `${envConfig.NEXT_PUBLIC_API_ENDPOINT}/user/logout`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          token: data.refresh_token,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${data.access_token}`,
+        },
+      }
+    );
+
+    const payload = await res.json();
+
+    if (!res.ok) {
+      throw payload;
+    }
+
+    return payload;
+  },
   logout: async () => {
     // remove token from server
     const res = await fetch("/api/auth/logout", {
@@ -61,6 +88,28 @@ const authApiRequest = {
     // remove token from local storage
     // remove user from context
     // redirect to login
+  },
+  refreshToken: async (data: { refresh_token: string }) => {
+    const res = await fetch(
+      `${envConfig.NEXT_PUBLIC_API_ENDPOINT}/user/refresh-token`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          token: data.refresh_token,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const payload = await res.json();
+
+    if (!res.ok) {
+      throw payload;
+    }
+
+    return payload;
   },
 };
 

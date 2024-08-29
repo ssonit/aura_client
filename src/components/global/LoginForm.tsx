@@ -27,7 +27,7 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const { handleSetToken, setUser } = useAppContext();
+  const { handleSetToken, setUser, handleSetRefreshToken } = useAppContext();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,7 +46,8 @@ const LoginForm = () => {
         token: result.token,
       });
 
-      handleSetToken(resultFromNextServer.token);
+      handleSetToken(resultFromNextServer.token.access_token);
+      handleSetRefreshToken(resultFromNextServer.token.refresh_token);
 
       setUser(result.data);
 

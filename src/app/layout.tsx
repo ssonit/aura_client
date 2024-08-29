@@ -21,6 +21,7 @@ export default function RootLayout({
 }) {
   const cookieStore = cookies();
   const token = cookieStore.get("token");
+  const refresh_token = cookieStore.get("refreshToken");
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -29,7 +30,10 @@ export default function RootLayout({
           font.className
         )}
       >
-        <AppContextProvider initialToken={token?.value}>
+        <AppContextProvider
+          initialToken={token?.value}
+          initialRefreshToken={refresh_token?.value}
+        >
           {children}
           <SlideToken></SlideToken>
         </AppContextProvider>

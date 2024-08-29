@@ -1,8 +1,8 @@
 export async function POST(request: Request) {
   const res = await request.json();
-  const token = res.token;
+  const { access_token, refresh_token } = res.token;
 
-  if (!token) {
+  if (!access_token || !refresh_token) {
     return Response.json(
       {
         message: "Invalid token",
@@ -16,7 +16,10 @@ export async function POST(request: Request) {
   return Response.json(res, {
     status: 200,
     headers: {
-      "Set-Cookie": `token=${token}; Path=/; HttpOnly; SameSite=Lax; Secure`,
+      "Set-Cookie": [
+        `token=${access_token}; Path=/; HttpOnly; SameSite=Lax; Secure`,
+        `refreshToken=${refresh_token}; Path=/; HttpOnly; SameSite=Lax; Secure`,
+      ].join(", "),
     },
   });
 }
