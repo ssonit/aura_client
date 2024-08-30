@@ -1,5 +1,4 @@
 import { ListPinResponse } from "@/types/pin";
-import { isTokenExpiringSoon, refreshAndSetToken } from "@/utils/helpers";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
 

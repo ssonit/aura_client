@@ -74,16 +74,3 @@ export const isTokenExpiringSoon = (token: string) => {
 
   return decodedToken.exp * 1000 <= bufferTime;
 };
-
-export const refreshAndSetToken = async (token: Token) => {
-  const res = await authApiRequest.refreshToken({
-    refresh_token: token.refresh_token,
-  });
-
-  // set token in cookie
-  const result = await authApiRequest.authTokenNextServer(res.token);
-
-  // set token in context
-
-  return result;
-};

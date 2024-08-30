@@ -92,7 +92,9 @@ const authApiRequest = {
     // remove user from context
     // redirect to login
   },
-  refreshToken: async (data: { refresh_token: string }) => {
+  refreshTokenFromNextServerToNextServer: async (data: {
+    refresh_token: string;
+  }) => {
     const res = await fetch(
       `${envConfig.NEXT_PUBLIC_API_ENDPOINT}/user/refresh-token`,
       {
@@ -113,6 +115,24 @@ const authApiRequest = {
     }
 
     return payload as { token: Token };
+  },
+
+  refreshTokenFromNextClientToNextServer: async () => {
+    const res = await fetch("/api/auth/refresh-token", {
+      method: "POST",
+      body: JSON.stringify({}),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const payload = await res.json();
+
+    if (!res.ok) {
+      throw payload;
+    }
+
+    return payload as { token: Token; exp: string };
   },
 };
 

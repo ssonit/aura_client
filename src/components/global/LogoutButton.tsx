@@ -15,6 +15,7 @@ const LogoutButton = () => {
       console.log(error);
     }
     localStorage.removeItem("user");
+    localStorage.removeItem("exp");
     handleSetToken("");
     handleSetRefreshToken("");
     setUser(null);

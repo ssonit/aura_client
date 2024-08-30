@@ -7,6 +7,8 @@ export async function POST(request: Request) {
   const access_token = cookieStore.get("token")?.value as string;
 
   if (!refresh_token || !access_token) {
+    cookieStore.delete("token");
+    cookieStore.delete("refreshToken");
     return Response.json(
       {
         message: "Invalid token",

@@ -18,12 +18,6 @@ export async function POST(request: Request) {
   const expToken = decodeJWT(access_token).exp * 1000;
   const expRefreshToken = decodeJWT(refresh_token).exp * 1000;
 
-  console.log(
-    new Date(expToken).getHours(),
-    new Date(expToken).getMinutes(),
-    new Date(expToken).getSeconds()
-  );
-
   return Response.json(res, {
     status: 200,
     headers: {

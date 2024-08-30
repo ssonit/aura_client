@@ -2,7 +2,6 @@
 
 import envConfig from "@/config";
 import { ListPinResponse, Photo } from "@/types/pin";
-import { isTokenExpiringSoon, refreshAndSetToken } from "@/utils/helpers";
 import { cookies } from "next/headers";
 
 const BASE_URL = envConfig.NEXT_PUBLIC_API_ENDPOINT;
