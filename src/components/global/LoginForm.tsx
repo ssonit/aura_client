@@ -17,6 +17,8 @@ import { useAppContext } from "@/contexts/app-provider";
 import authApiRequest from "@/actions/auth";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { setCookie } from "cookies-next";
+import { decodeJWT } from "@/utils/helpers";
 
 const formSchema = z.object({
   email: z.string().email(),

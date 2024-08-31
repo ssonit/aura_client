@@ -23,7 +23,7 @@ const authApiRequest = {
     return payload as AuthResponse;
   },
   authTokenNextServer: async (data: Token) => {
-    const res = await fetch("/api/auth", {
+    const res = await fetch(`${envConfig.NEXT_PUBLIC_URL}/api/auth`, {
       method: "POST",
       body: JSON.stringify({
         token: data,
@@ -70,7 +70,7 @@ const authApiRequest = {
   },
   logout: async () => {
     // remove token from server
-    const res = await fetch("/api/auth/logout", {
+    const res = await fetch(`${envConfig.NEXT_PUBLIC_URL}/api/auth/logout`, {
       method: "POST",
       body: JSON.stringify({
         message: "logout",
@@ -87,10 +87,6 @@ const authApiRequest = {
     }
 
     return payload;
-
-    // remove token from local storage
-    // remove user from context
-    // redirect to login
   },
   refreshTokenFromNextServerToServer: async (data: {
     refresh_token: string;

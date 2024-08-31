@@ -1,14 +1,13 @@
 import authApiRequest from "@/actions/auth";
 import { decodeJWT } from "@/utils/helpers";
-import { getCookie, setCookie } from "cookies-next";
+import { setCookie } from "cookies-next";
 import { cookies } from "next/headers";
+import { NextRequest } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const {
     token: { refresh_token },
   } = await request.json();
-
-  console.log(getCookie("refresh_token", { cookies }));
 
   if (!refresh_token) {
     return Response.json(
@@ -27,20 +26,22 @@ export async function POST(request: Request) {
     const { access_token: new_access_token, refresh_token: new_refresh_token } =
       res.token;
 
-    const expRefreshToken = decodeJWT(refresh_token).exp;
+    const expRefreshToken = decodeJWT(refresh_token).exp * 1000;
 
     setCookie("refresh_token", new_refresh_token, {
-      expires: new Date(expRefreshToken * 1000),
+      expires: new Date(expRefreshToken),
       secure: true,
       path: "/",
+      sameSite: "lax",
       httpOnly: true,
       cookies,
     });
 
     setCookie("access_token", new_access_token, {
-      expires: new Date(expRefreshToken * 1000),
+      expires: new Date(expRefreshToken),
       secure: true,
       path: "/",
+      sameSite: "lax",
       cookies,
     });
 

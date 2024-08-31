@@ -19,18 +19,20 @@ export async function POST(request: Request) {
 
   const expRefreshToken = decodeJWT(refresh_token).exp * 1000;
 
-  setCookie("refresh_token", refresh_token, {
-    expires: new Date(expRefreshToken * 1000),
+  setCookie("access_token", access_token, {
+    expires: new Date(expRefreshToken),
     secure: true,
     path: "/",
-    httpOnly: true,
+    sameSite: "lax",
     cookies,
   });
 
-  setCookie("access_token", access_token, {
-    expires: new Date(expRefreshToken * 1000),
+  setCookie("refresh_token", refresh_token, {
+    expires: new Date(expRefreshToken),
     secure: true,
     path: "/",
+    sameSite: "lax",
+    httpOnly: true,
     cookies,
   });
 

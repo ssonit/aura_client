@@ -1,6 +1,8 @@
 import { fetchPins, handleListPins } from "@/actions/pins";
 import MasonryInfinityScroll from "@/components/global/MasonryInfinityScroll";
 import { dynamicBlurDataUrl } from "@/utils/helpers";
+import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
 
 const HomePage = async () => {
   const data = await fetchPins(1, 20);
@@ -10,8 +12,9 @@ const HomePage = async () => {
   }));
   const photos = await Promise.all(newData);
 
-  const pins = await handleListPins(1, 20);
+  const access_token = getCookie("access_token", { cookies }) as string;
 
+  const pins = await handleListPins(1, 20, access_token);
   console.log(pins);
 
   return (
