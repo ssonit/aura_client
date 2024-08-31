@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 const LogoutButton = () => {
   const router = useRouter();
-  const { handleSetToken, setUser, handleSetRefreshToken } = useAppContext();
+  const { setUser } = useAppContext();
   const handleLogout = async () => {
     try {
       await authApiRequest.logout();
@@ -15,9 +15,6 @@ const LogoutButton = () => {
       console.log(error);
     }
     localStorage.removeItem("user");
-    localStorage.removeItem("exp");
-    handleSetToken("");
-    handleSetRefreshToken("");
     setUser(null);
     router.push("/login");
     router.refresh();

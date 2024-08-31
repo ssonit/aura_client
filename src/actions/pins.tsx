@@ -1,8 +1,11 @@
 "use server";
 
 import envConfig from "@/config";
-import { ListPinResponse, Photo } from "@/types/pin";
+import { Photo } from "@/types/pin";
+import { getCookie, setCookie } from "cookies-next";
 import { cookies } from "next/headers";
+import authApiRequest from "./auth";
+import { decodeJWT } from "@/utils/helpers";
 
 const BASE_URL = envConfig.NEXT_PUBLIC_API_ENDPOINT;
 
@@ -22,35 +25,49 @@ export const fetchPins = async (page: number, limit: number = 10) => {
   return data as Photo[];
 };
 
-export const handleListPins = async ({
-  page = 1,
-  limit = 10,
-}: {
-  page?: number;
-  limit?: number;
-}) => {
-  const cookieStore = cookies();
-  let access_token = cookieStore.get("token")?.value as string;
+export const handleListPins = async (page: number, limit: number = 10) => {
+  const access_token = getCookie("access_token", { cookies }) as string;
+  const refresh_token = getCookie("refresh_token", { cookies }) as string;
 
-  const res = await fetch(
-    `${BASE_URL}/pin?` +
-      new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-      }),
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
+  if (access_token) {
+    const exp = decodeJWT(access_token).exp;
+    const now = new Date().getTime();
+    let new_access_token = access_token;
+    if (exp * 1000 <= now) {
+      try {
+        const result =
+          await authApiRequest.refreshTokenFromNextClientToNextServer({
+            refresh_token,
+            access_token,
+          });
+
+        console.log(result, "refresh token in server");
+        new_access_token = result.token.access_token;
+      } catch (error) {
+        console.error("Error refreshing token:", error);
+      }
     }
-  );
+    const res = await fetch(
+      BASE_URL +
+        "/pin?" +
+        new URLSearchParams({
+          page: page.toString(),
+          limit: limit.toString(),
+        }),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${new_access_token}`,
+        },
+      }
+    );
+    const data = await res.json();
 
-  const data = await res.json();
+    if (!res.ok) {
+      throw data;
+    }
 
-  if (!res.ok) {
-    throw data;
+    return data;
   }
-
-  return data as ListPinResponse;
 };

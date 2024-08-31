@@ -1,8 +1,6 @@
-import { pinApiRequest } from "@/actions/pin";
-import { fetchPins } from "@/actions/pins";
+import { fetchPins, handleListPins } from "@/actions/pins";
 import MasonryInfinityScroll from "@/components/global/MasonryInfinityScroll";
 import { dynamicBlurDataUrl } from "@/utils/helpers";
-import { cookies } from "next/headers";
 
 const HomePage = async () => {
   const data = await fetchPins(1, 20);
@@ -12,16 +10,7 @@ const HomePage = async () => {
   }));
   const photos = await Promise.all(newData);
 
-  const cookieStore = cookies();
-  const access_token = cookieStore.get("token")?.value as string;
-  const refresh_token = cookieStore.get("refreshToken")?.value as string;
-
-  const pins = await pinApiRequest.handleListPins({
-    page: 1,
-    limit: 20,
-    access_token: access_token,
-    refresh_token: refresh_token,
-  });
+  const pins = await handleListPins(1, 20);
 
   console.log(pins);
 

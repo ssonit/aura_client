@@ -15,9 +15,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppContext } from "@/contexts/app-provider";
 import authApiRequest from "@/actions/auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { decodeJWT } from "@/utils/helpers";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -28,7 +27,7 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const { handleSetToken, setUser, handleSetRefreshToken } = useAppContext();
+  const { setUser } = useAppContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,12 +47,7 @@ const LoginForm = () => {
         result.token
       );
 
-      handleSetToken(resultFromNextServer.token.access_token);
-      handleSetRefreshToken(resultFromNextServer.token.refresh_token);
-
-      const exp = decodeJWT(resultFromNextServer.token.access_token).exp;
-
-      localStorage.setItem("exp", JSON.stringify(exp));
+      console.log(resultFromNextServer);
 
       setUser(result.data);
 

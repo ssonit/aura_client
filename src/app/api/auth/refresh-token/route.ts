@@ -1,13 +1,16 @@
 import authApiRequest from "@/actions/auth";
 import { decodeJWT } from "@/utils/helpers";
+import { getCookie, setCookie } from "cookies-next";
 import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
-  const cookieStore = cookies();
-  const access_token = cookieStore.get("token")?.value;
-  const refresh_token = cookieStore.get("refreshToken")?.value;
+  const {
+    token: { refresh_token },
+  } = await request.json();
 
-  if (!access_token || !refresh_token) {
+  console.log(getCookie("refresh_token", { cookies }));
+
+  if (!refresh_token) {
     return Response.json(
       { message: "Không nhận được token" },
       {
@@ -17,35 +20,36 @@ export async function POST(request: Request) {
   }
 
   try {
-    const res = await authApiRequest.refreshTokenFromNextServerToNextServer({
+    const res = await authApiRequest.refreshTokenFromNextServerToServer({
       refresh_token,
     });
-
-    console.log({ refresh_token }, "server");
 
     const { access_token: new_access_token, refresh_token: new_refresh_token } =
       res.token;
 
-    const expToken = decodeJWT(new_access_token).exp * 1000;
-    const expRefreshToken = decodeJWT(new_refresh_token).exp * 1000;
+    const expRefreshToken = decodeJWT(refresh_token).exp;
+
+    setCookie("refresh_token", new_refresh_token, {
+      expires: new Date(expRefreshToken * 1000),
+      secure: true,
+      path: "/",
+      httpOnly: true,
+      cookies,
+    });
+
+    setCookie("access_token", new_access_token, {
+      expires: new Date(expRefreshToken * 1000),
+      secure: true,
+      path: "/",
+      cookies,
+    });
 
     return Response.json(
       {
         token: res.token,
-        exp: expToken / 1000,
       },
       {
         status: 200,
-        headers: {
-          "Set-Cookie": [
-            `token=${new_access_token}; Path=/; HttpOnly; SameSite=Lax; Secure; Expires=${new Date(
-              expToken
-            ).toUTCString()}`,
-            `refreshToken=${new_refresh_token}; Path=/; HttpOnly; SameSite=Lax; Secure; Expires=${new Date(
-              expRefreshToken
-            ).toUTCString()}`,
-          ].join(", "),
-        },
       }
     );
   } catch (error) {

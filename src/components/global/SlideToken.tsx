@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const SlideToken = () => {
-  const { setUser, handleSetToken, handleSetRefreshToken } = useAppContext();
+  const { setUser } = useAppContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -18,8 +18,7 @@ const SlideToken = () => {
       }
       localStorage.removeItem("user");
       localStorage.removeItem("exp");
-      handleSetToken("");
-      handleSetRefreshToken("");
+      localStorage.removeItem("access_token");
       setUser(null);
     };
     window.addEventListener("beforeunload", handleTabClose);
@@ -39,15 +38,14 @@ const SlideToken = () => {
           try {
             const result =
               await authApiRequest.refreshTokenFromNextClientToNextServer();
-            handleSetToken(result.token.access_token);
-            handleSetRefreshToken(result.token.refresh_token);
+
+            localStorage.setItem("access_token", result.token.access_token);
             localStorage.setItem("exp", JSON.stringify(result.exp));
           } catch (error) {
             await authApiRequest.logout();
             localStorage.removeItem("user");
             localStorage.removeItem("exp");
-            handleSetToken("");
-            handleSetRefreshToken("");
+            localStorage.removeItem("access_token");
             setUser(null);
             router.push("/login");
             router.refresh();
@@ -57,7 +55,7 @@ const SlideToken = () => {
       }
     }, 30 * 60 * 1000); // 30 minutes
     return () => clearInterval(interval);
-  }, [handleSetRefreshToken, handleSetToken, router, setUser]);
+  }, [router, setUser]);
   return null;
 };
 

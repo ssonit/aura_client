@@ -19,9 +19,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = cookies();
-  const access_token = cookieStore.get("token");
-  const refresh_token = cookieStore.get("refreshToken");
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -31,11 +29,9 @@ export default function RootLayout({
         )}
       >
         <AppContextProvider
-          initialToken={access_token?.value}
-          initialRefreshToken={refresh_token?.value}
         >
           {children}
-          <SlideToken></SlideToken>
+          {/* <SlideToken></SlideToken> */}
         </AppContextProvider>
         <Toaster />
       </body>

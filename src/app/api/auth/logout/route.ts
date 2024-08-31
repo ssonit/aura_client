@@ -1,20 +1,18 @@
 import authApiRequest from "@/actions/auth";
+import { deleteCookie, getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
-  const cookieStore = cookies();
-  const refresh_token = cookieStore.get("refreshToken")?.value as string;
-  const access_token = cookieStore.get("token")?.value as string;
+  const refresh_token = getCookie("refresh_token", { cookies });
+  const access_token = getCookie("access_token", { cookies });
 
   if (!refresh_token || !access_token) {
-    cookieStore.delete("token");
-    cookieStore.delete("refreshToken");
     return Response.json(
       {
         message: "Invalid token",
       },
       {
-        status: 400,
+        status: 401,
       }
     );
   }
@@ -24,13 +22,21 @@ export async function POST(request: Request) {
     access_token,
   });
 
+  if (!result) {
+    return Response.json(
+      {
+        message: "Logout failed",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  deleteCookie("refresh_token", { cookies });
+  deleteCookie("access_token", { cookies });
+
   return Response.json(result, {
     status: 200,
-    headers: {
-      "Set-Cookie": [
-        `token=; Path=/; HttpOnly; Max-Age=0`,
-        `refreshToken=; Path=/; HttpOnly; Max-Age=0`,
-      ].join(", "),
-    },
   });
 }
