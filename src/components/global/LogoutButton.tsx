@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import authApiRequest from "@/actions/auth";
+import { Button } from "@/components/ui/button";
 import { useAppContext } from "@/contexts/app-provider";
 import { useRouter } from "next/navigation";
 

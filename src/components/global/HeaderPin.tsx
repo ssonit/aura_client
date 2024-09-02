@@ -40,18 +40,6 @@ const HeaderPin = () => {
             </Link>
           </Button>
           <HeaderAvatar></HeaderAvatar>
-          {/* <div>
-          <Button variant="outline">
-            <Link href="/login" prefetch={false}>
-              Sign In
-            </Link>
-          </Button>
-          <Button>
-            <Link href="/register" prefetch={false}>
-              Sign Up
-            </Link>
-          </Button>
-          </div> */}
         </div>
       </div>
     </header>

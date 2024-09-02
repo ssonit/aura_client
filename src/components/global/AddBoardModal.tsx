@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,6 +22,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAppContext } from "@/contexts/app-provider";
+import { handleCreateBoard } from "@/actions/pins";
+import { getCookie } from "cookies-next";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -30,6 +31,8 @@ const FormSchema = z.object({
 });
 
 const AddBoardModal = () => {
+  const access_token = getCookie("access_token") as string;
+
   const { isModalOpen, handleModalOpen } = useAppContext();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -38,8 +41,14 @@ const AddBoardModal = () => {
       isPrivate: false,
     },
   });
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    await handleCreateBoard({
+      name: data.name,
+      isPrivate: data.isPrivate,
+      access_token,
+    });
+    form.reset();
+    handleModalOpen(false);
   }
   return (
     <Dialog open={isModalOpen} onOpenChange={handleModalOpen}>

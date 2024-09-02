@@ -2,10 +2,10 @@
 
 import { useInView } from "react-intersection-observer";
 import { useEffect, useState } from "react";
-import { fetchPins } from "@/actions/pins";
 import MasonicColumns from "./MasonicColumns";
 import { Photo } from "@/types/pin";
 import { dynamicBlurDataUrl } from "@/utils/helpers";
+import { fetchPins } from "@/actions/pins";
 
 let page = 2;
 
