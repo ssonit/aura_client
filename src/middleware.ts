@@ -8,6 +8,10 @@ import authApiRequest from "./actions/auth";
 const privatePaths = ["/home"];
 const authPaths = ["/login", "/register"];
 
+const detailRegex = [/^\/pin\/[a-zA-Z0-9-]+$/, /^\/profile\/[a-zA-Z0-9-]+$/];
+
+const pinDetailRegex = /^\/pin\/[a-zA-Z0-9-]+$/;
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -33,10 +37,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
+  if (detailRegex.some((path) => pathname.match(path)) && !access_token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
   return NextResponse.next();
 }
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/login", "/register", "/home"],
+  matcher: ["/login", "/register", "/home", "/profile/:path*", "/pin/:path*"],
 };

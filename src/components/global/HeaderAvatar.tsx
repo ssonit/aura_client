@@ -57,7 +57,7 @@ const HeaderAvatar = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => router.push(`/${user.id}`)}
+          onClick={() => router.push(`/profile/${user.id}`)}
         >
           Profile
         </DropdownMenuItem>

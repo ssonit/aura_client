@@ -3,8 +3,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, Share, MoreHorizontal, Download } from "lucide-react";
 import Image from "next/image";
 import BackButton from "@/components/global/BackButton";
+import { handlePinDetail } from "@/actions/pins";
+import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
 
-const DetailPage = () => {
+const DetailPage = async ({ params }: { params: { id: string } }) => {
+  const { id } = params;
+  const access_token = getCookie("access_token", { cookies }) as string;
+  const res = await handlePinDetail(id, access_token);
+  const data = res.data;
   return (
     <div className="mx-auto px-2 py-8">
       <div className="fixed z-[100] pl-4">
@@ -15,7 +22,11 @@ const DetailPage = () => {
         <div className="md:w-1/2">
           <div className="relative rounded-xl">
             <Image
-              src="https://i.pinimg.com/originals/47/d2/d8/47d2d8fb5b55f27eb7b6d0421c374097.jpg"
+              src={
+                data.media.url
+                  ? data.media.url
+                  : "https://i.pinimg.com/originals/47/d2/d8/47d2d8fb5b55f27eb7b6d0421c374097.jpg"
+              }
               alt="Pin Image"
               className="rounded-xl w-full h-auto object-cover"
               priority
@@ -38,25 +49,22 @@ const DetailPage = () => {
             </div>
 
             <h1 className="text-3xl font-bold text-muted pointer-events-none">
-              Beautiful Landscape Photography
+              {data.title ? data.title : "Beautiful Landscape Photography"}
             </h1>
 
             <p className="text-muted-foreground">
-              Capture the essence of nature with these stunning landscape
-              photography techniques. Learn how to use light, composition, and
-              perspective to create breathtaking images.
+              {data.description
+                ? data.description
+                : "Capture the essence of nature with these stunning landscape photography techniques. Learn how to use light, composition, and perspective to create breathtaking images."}
             </p>
 
             <div className="flex items-center space-x-4">
               <Avatar>
-                <AvatarImage
-                  src="/placeholder.svg?height=40&width=40"
-                  alt="@username"
-                />
-                <AvatarFallback>UN</AvatarFallback>
+                <AvatarImage src={data.user.avatar} alt="@username" />
+                <AvatarFallback>AV</AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-semibold text-muted">Username</p>
+                <p className="font-semibold text-muted">{data.user.username}</p>
                 <p className="text-sm text-muted-foreground">1.5k followers</p>
               </div>
             </div>

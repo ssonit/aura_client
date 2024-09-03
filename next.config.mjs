@@ -9,6 +9,7 @@ const nextConfig = {
       "shikimori.one",
       "picsum.photos",
       "i.pinimg.com",
+      "res.cloudinary.com",
     ],
   },
   reactStrictMode: false,

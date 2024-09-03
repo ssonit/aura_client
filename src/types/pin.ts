@@ -14,10 +14,16 @@ export type TPinCard = JSX.Element;
 interface Media {
   id: string;
   url: string;
-  type: string;
+  secure_url: string;
+  public_id: string;
+  format: string;
+  width: number;
+  height: number;
+  created_at: string;
+  updated_at: string;
 }
 
-interface Pin {
+export interface Pin {
   id: string;
   user_id: string;
   title: string;
@@ -28,6 +34,10 @@ interface Pin {
   media: Media;
   created_at: string;
   updated_at: string;
+}
+
+export interface PinDetail {
+  data: Pin;
 }
 
 export interface ListPinResponse {

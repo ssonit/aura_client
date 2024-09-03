@@ -2,7 +2,7 @@
 
 import envConfig from "@/config";
 import { BoardResponse } from "@/types/board";
-import { Photo } from "@/types/pin";
+import { ListPinResponse, Photo, PinDetail } from "@/types/pin";
 import { revalidateTag } from "next/cache";
 
 const BASE_URL = envConfig.NEXT_PUBLIC_API_ENDPOINT;
@@ -26,15 +26,19 @@ export const fetchPins = async (page: number, limit: number = 10) => {
 export const handleListPins = async (
   page: number,
   limit: number = 10,
-  access_token: string
+  access_token: string,
+  filter?: any
 ) => {
+  filter = {};
+
+  const searchParams = {
+    page: page.toString(),
+    limit: limit.toString(),
+    ...filter,
+  };
+
   const res = await fetch(
-    BASE_URL +
-      "/pin?" +
-      new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-      }),
+    BASE_URL + "/pin?" + new URLSearchParams(searchParams),
     {
       method: "GET",
       headers: {
@@ -49,7 +53,26 @@ export const handleListPins = async (
     throw data;
   }
 
-  return data;
+  return data as ListPinResponse;
+};
+
+export const handlePinDetail = async (id: string, access_token: string) => {
+  const res = await fetch(BASE_URL + `/pin/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    cache: "no-store",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data as PinDetail;
 };
 
 export const handleCreateBoard = async (payload: {

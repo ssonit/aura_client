@@ -1,12 +1,37 @@
 "use client";
 
+import { handleGetUser } from "@/actions/user";
 import { Button } from "@/components/ui/button";
 import { useAppContext } from "@/contexts/app-provider";
+import { User } from "@/types/auth";
+import { getCookie } from "cookies-next";
 import { Share2, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 
-const InfoProfile = () => {
+const InfoProfile = ({ id }: { id: string }) => {
+  const access_token = getCookie("access_token") as string;
   const { user } = useAppContext();
+  const isProfile = useMemo(() => user?.id === id, [id, user]);
+
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      if (isProfile) {
+        setCurrentUser(user);
+      } else {
+        try {
+          if (!access_token) return;
+          const res = await handleGetUser(id, access_token);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+    fetchUser();
+  }, [access_token, id, isProfile, user]);
+
   return (
     <div className="text-center mb-8">
       <Image
