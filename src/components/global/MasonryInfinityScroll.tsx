@@ -4,7 +4,7 @@ import { useInView } from "react-intersection-observer";
 import { useEffect, useState } from "react";
 import MasonicColumns from "./MasonicColumns";
 import { Photo } from "@/types/pin";
-import { dynamicBlurDataUrl } from "@/utils/helpers";
+import { dynamicBlurDataColor } from "@/utils/helpers";
 import { fetchPins } from "@/actions/pins";
 
 let page = 2;
@@ -22,7 +22,7 @@ const MasonryInfinityScroll = ({ initData }: { initData: Photo[] }) => {
     const res = await fetchPins(page, 10);
     const newData = [...data, ...res].map(async (item) => ({
       ...item,
-      placeholder: await dynamicBlurDataUrl(item.download_url),
+      placeholder: dynamicBlurDataColor(),
     }));
     const photos = await Promise.all(newData);
     setData(photos);

@@ -26,27 +26,28 @@ import { Switch } from "@/components/ui/switch";
 import { ImageIcon, LinkIcon } from "lucide-react";
 import ImagePreview from "./ImagePreview";
 import { isImageURL } from "@/utils/helpers";
+import { Board } from "@/types/board";
+import { useToast } from "@/components/ui/use-toast";
+import { handleUploadImage } from "@/actions/upload";
+import { getCookie } from "cookies-next";
+import { handlePinCreated } from "@/actions/pins";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
   description: z.string().max(500),
   imageUrl: z.string(),
   linkUrl: z.string().url().optional(),
-  selectedBoard: z.string().optional(),
+  selectedBoard: z.string(),
 });
-
-const boards = [
-  { id: "1", name: "Travel" },
-  { id: "2", name: "Recipes" },
-  { id: "3", name: "DIY Projects" },
-  { id: "5", name: "Fashion" },
-];
 
 interface Props {
   initData?: z.infer<typeof formSchema>;
+  boards: Board[];
 }
 
-const PinForm = ({ initData }: Props) => {
+const PinForm = ({ initData, boards }: Props) => {
+  const { toast } = useToast();
+  const access_token = getCookie("access_token") as string;
   const [isUrlInput, setIsUrlInput] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -82,8 +83,37 @@ const PinForm = ({ initData }: Props) => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log({ ...values, file });
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    if (!access_token) return;
+    try {
+      let resUpload;
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        resUpload = await handleUploadImage(formData, access_token);
+      }
+
+      const res = await handlePinCreated(
+        {
+          title: values.title,
+          description: values.description,
+          board_id: values.selectedBoard,
+          link_url: values.linkUrl,
+          media_id: resUpload ? resUpload.data.id : values.imageUrl,
+        },
+        access_token
+      );
+      console.log(res);
+    } catch (error) {
+      console.log(error, "error");
+    }
+
+    form.reset();
+    handleRemoveImage();
+    toast({
+      title: "Pin created successfully!",
+    });
   }
   return (
     <Form {...form}>

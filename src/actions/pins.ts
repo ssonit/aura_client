@@ -1,11 +1,10 @@
 "use server";
 
 import envConfig from "@/config";
+import { BASE_URL } from "@/constants";
 import { BoardResponse } from "@/types/board";
-import { ListPinResponse, Photo, PinDetail } from "@/types/pin";
+import { ListPinResponse, Photo, PinCreated, PinDetail } from "@/types/pin";
 import { revalidateTag } from "next/cache";
-
-const BASE_URL = envConfig.NEXT_PUBLIC_API_ENDPOINT;
 
 export const fetchPins = async (page: number, limit: number = 10) => {
   const res = await fetch(
@@ -75,6 +74,28 @@ export const handlePinDetail = async (id: string, access_token: string) => {
   return data as PinDetail;
 };
 
+export const handlePinCreated = async (
+  payload: PinCreated,
+  access_token: string
+) => {
+  const res = await fetch(BASE_URL + "/pin/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};
+
 export const handleCreateBoard = async (payload: {
   name: string;
   isPrivate: boolean;
@@ -115,6 +136,26 @@ export const handleListBoardsByUser = async (access_token: string) => {
     },
   });
 
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data as BoardResponse;
+};
+
+export const handleListBoardPin = async (
+  boardId: string,
+  access_token: string
+) => {
+  const res = await fetch(BASE_URL + `/pin/${boardId}/board`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
   const data = await res.json();
 
   if (!res.ok) {

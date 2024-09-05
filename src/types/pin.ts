@@ -8,6 +8,7 @@ export interface Photo {
   url: string;
   download_url: string;
   placeholder?: string;
+  isAura?: boolean;
 }
 export type TPinCard = JSX.Element;
 
@@ -34,6 +35,14 @@ export interface Pin {
   media: Media;
   created_at: string;
   updated_at: string;
+}
+
+export interface PinCreated {
+  title: string;
+  description: string;
+  media_id: string;
+  link_url?: string;
+  board_id: string;
 }
 
 export interface PinDetail {

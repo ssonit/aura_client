@@ -1,8 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import PinForm from "@/components/global/PinForm";
+import { handleListBoardsByUser } from "@/actions/pins";
+import { cookies } from "next/headers";
+import { getCookie } from "cookies-next";
+import { Suspense } from "react";
 
-const CreatePinTool = () => {
+const CreatePinTool = async () => {
+  const access_token = getCookie("access_token", { cookies }) as string;
+  const res = await handleListBoardsByUser(access_token);
+
   // const handleSubmit = (e: React.FormEvent) => {
   //   e.preventDefault();
   //   // Here you would typically send the data to your backend
@@ -37,9 +44,11 @@ const CreatePinTool = () => {
             Create a New Pin
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <PinForm />
-        </CardContent>
+        <Suspense fallback={<div>Loading...</div>}>
+          <CardContent>
+            <PinForm boards={res.data} />
+          </CardContent>
+        </Suspense>
       </Card>
     </div>
   );

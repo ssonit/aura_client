@@ -7,10 +7,12 @@ import { Board } from "@/types/board";
 import { getCookie } from "cookies-next";
 import { Pen } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const CurrentUserProfile = () => {
+const CurrentUserProfile = ({ id }: { id: string }) => {
   const access_token = getCookie("access_token") as string;
+  const router = useRouter();
   const [data, setData] = useState<Board[]>([]);
 
   useEffect(() => {
@@ -34,6 +36,9 @@ const CurrentUserProfile = () => {
           <div
             key={board.id}
             className="relative overflow-hidden group cursor-pointer"
+            onClick={() => {
+              router.push(`/profile/${id}/${board.id}`);
+            }}
           >
             <div className="relative">
               <AspectRatio ratio={4 / 3}>

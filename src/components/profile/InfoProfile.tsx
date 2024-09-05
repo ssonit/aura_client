@@ -55,14 +55,6 @@ const InfoProfile = ({ id }: { id: string }) => {
       <p className="mt-2 text-gray-700">
         {user?.bio || "Creative designer and photography enthusiast"}
       </p>
-      <div className="flex justify-center space-x-4 mt-4">
-        <div>
-          <span className="font-semibold">1.5k</span> followers
-        </div>
-        <div>
-          <span className="font-semibold">843</span> following
-        </div>
-      </div>
       <div className="flex justify-center items-center space-x-2 mt-4">
         <Button>Follow</Button>
         <Button variant="outline">

@@ -1,4 +1,5 @@
 import { User } from "./auth";
+import { Pin } from "./pin";
 
 export interface BoardResponse {
   data: Board[];
@@ -13,4 +14,19 @@ export interface Board {
   user: User;
   created_at: string;
   updated_at: string;
+}
+
+export interface BoardPin {
+  id: string;
+  board_id: string;
+  pin_id: string;
+  board: Board;
+  pin: Pin;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BoardPinResponse {
+  data: BoardPin[];
+  filter: any;
 }
