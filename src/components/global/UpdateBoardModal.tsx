@@ -22,48 +22,46 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAppContext } from "@/contexts/app-provider";
-import { handleCreateBoard } from "@/actions/pins";
 import { getCookie } from "cookies-next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Board } from "@/types/board";
 
 const FormSchema = z.object({
   name: z.string(),
   isPrivate: z.boolean().default(false),
 });
 
-const AddBoardModal = () => {
+const UpdateBoardModal = ({ board }: { board: Board }) => {
   const [isLoading, setIsLoading] = useState(false);
   const access_token = getCookie("access_token") as string;
 
-  const { isModalOpen, handleModalOpen } = useAppContext();
+  const { isModalUpdateBoard, handleModalUpdateBoard } = useAppContext();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
-      isPrivate: false,
+      name: board.name,
+      isPrivate: board.isPrivate,
     },
   });
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
     try {
-      await handleCreateBoard({
-        name: data.name,
-        isPrivate: data.isPrivate,
-        access_token,
-      });
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
     form.reset();
-    handleModalOpen(false);
+    handleModalUpdateBoard(false);
   }
+
   return (
-    <Dialog open={isModalOpen} onOpenChange={handleModalOpen}>
+    <Dialog open={isModalUpdateBoard} onOpenChange={handleModalUpdateBoard}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Board</DialogTitle>
+          <DialogTitle>Update Board</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <Form {...form}>
@@ -108,7 +106,7 @@ const AddBoardModal = () => {
               />
               <DialogFooter>
                 <Button type="submit" disabled={isLoading}>
-                  Add Board
+                  Update Board
                 </Button>
               </DialogFooter>
             </form>
@@ -119,4 +117,4 @@ const AddBoardModal = () => {
   );
 };
 
-export default AddBoardModal;
+export default UpdateBoardModal;

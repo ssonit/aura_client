@@ -1,5 +1,6 @@
-import { handleListBoardPin } from "@/actions/pins";
+import { handleBoardItem, handleListBoardPin } from "@/actions/pins";
 import MasonryBoardPin from "@/components/global/MasonryBoardPin";
+import UpdateBoardModal from "@/components/global/UpdateBoardModal";
 import DropdownProfileBoard from "@/components/profile/DropdownProfileBoard";
 import { Photo } from "@/types/pin";
 import { dynamicBlurDataColor } from "@/utils/helpers";
@@ -11,8 +12,12 @@ const ListPinInBoard = async ({ params }: { params: { boardId: string } }) => {
   const access_token = getCookie("access_token", { cookies }) as string;
 
   const res = await handleListBoardPin(1, 10, boardId, access_token);
+  const resBoardItem = await handleBoardItem(boardId, access_token);
 
-  const pins = res.data.map(
+  if (!res.data || !resBoardItem.data)
+    return <div className="text-center justify-center mt-10">Not found</div>;
+
+  const pins = res.data?.map(
     (item) =>
       ({
         author: "",
@@ -29,7 +34,7 @@ const ListPinInBoard = async ({ params }: { params: { boardId: string } }) => {
   return (
     <div className="mt-10">
       <div className="flex items-center gap-3 justify-center">
-        <h3 className="font-bold text-3xl">Wuwa {boardId}</h3>
+        <h3 className="font-bold text-3xl">{resBoardItem.data.name}</h3>
         <DropdownProfileBoard></DropdownProfileBoard>
       </div>
       <div className="mt-28">
@@ -37,6 +42,7 @@ const ListPinInBoard = async ({ params }: { params: { boardId: string } }) => {
           <MasonryBoardPin initData={pins} boardId={boardId} />
         </div>
       </div>
+      <UpdateBoardModal board={resBoardItem.data}></UpdateBoardModal>
     </div>
   );
 };

@@ -49,6 +49,7 @@ const PinForm = ({ initData, boards }: Props) => {
   const { toast } = useToast();
   const access_token = getCookie("access_token") as string;
   const [isUrlInput, setIsUrlInput] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,8 +85,20 @@ const PinForm = ({ initData, boards }: Props) => {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    if (!access_token) return;
+    if (!access_token) {
+      toast({
+        title: "You need to login first!",
+      });
+      return;
+    }
+
+    if (boards.length <= 0) {
+      toast({
+        title: "You need to create a board first!",
+      });
+      return;
+    }
+    setIsLoading(true);
     try {
       let resUpload;
       if (file) {
@@ -107,6 +120,8 @@ const PinForm = ({ initData, boards }: Props) => {
       console.log(res);
     } catch (error) {
       console.log(error, "error");
+    } finally {
+      setIsLoading(false);
     }
 
     form.reset();
@@ -252,7 +267,9 @@ const PinForm = ({ initData, boards }: Props) => {
             )}
           />
           <div className="text-center">
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={isLoading}>
+              Submit
+            </Button>
           </div>
         </div>
       </form>

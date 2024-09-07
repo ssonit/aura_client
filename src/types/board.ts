@@ -31,3 +31,7 @@ export interface BoardPinResponse {
   data: BoardPin[];
   filter: any;
 }
+
+export interface BoardItemResponse {
+  data: Board;
+}

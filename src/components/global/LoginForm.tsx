@@ -17,8 +17,6 @@ import { useAppContext } from "@/contexts/app-provider";
 import authApiRequest from "@/actions/auth";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { setCookie } from "cookies-next";
-import { decodeJWT } from "@/utils/helpers";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -40,7 +38,6 @@ const LoginForm = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (loading) return;
     setLoading(true);
     try {
       const result = await authApiRequest.login(values);

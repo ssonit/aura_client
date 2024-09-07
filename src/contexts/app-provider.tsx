@@ -23,6 +23,8 @@ type User = {
 interface AppContextInterface {
   isModalOpen: boolean;
   handleModalOpen: (isOpen: boolean) => void;
+  isModalUpdateBoard: boolean;
+  handleModalUpdateBoard: (isOpen: boolean) => void;
   user: User | null;
   setUser: (user: User | null) => void;
   isAuthenticated: boolean;
@@ -31,6 +33,8 @@ interface AppContextInterface {
 const initialAppContext: AppContextInterface = {
   isModalOpen: false,
   handleModalOpen: () => {},
+  isModalUpdateBoard: false,
+  handleModalUpdateBoard: () => {},
   user: null,
   setUser: () => {},
   isAuthenticated: false,
@@ -48,6 +52,9 @@ export default function AppContextProvider({
   children: React.ReactNode;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(initialAppContext.isModalOpen);
+  const [isModalUpdateBoard, setIsModalUpdateBoard] = useState(
+    initialAppContext.isModalUpdateBoard
+  );
   const [user, setUserState] = useState<User | null>(initialAppContext.user);
 
   const isAuthenticated = useMemo(() => Boolean(user), [user]);
@@ -58,20 +65,26 @@ export default function AppContextProvider({
     }
   }, []);
 
+  const handleModalOpen = (isOpen: boolean) => {
+    setIsModalOpen(isOpen);
+  };
+
+  const handleModalUpdateBoard = (isOpen: boolean) => {
+    setIsModalUpdateBoard(isOpen);
+  };
+
   useEffect(() => {
     const _user = localStorage.getItem("user");
     setUserState(_user ? JSON.parse(_user) : null);
   }, []);
-
-  const handleModalOpen = (isOpen: boolean) => {
-    setIsModalOpen(isOpen);
-  };
 
   return (
     <AppContext.Provider
       value={{
         isModalOpen,
         handleModalOpen,
+        isModalUpdateBoard,
+        handleModalUpdateBoard,
         user,
         setUser,
         isAuthenticated,

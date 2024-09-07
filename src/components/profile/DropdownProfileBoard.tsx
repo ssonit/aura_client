@@ -11,8 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useAppContext } from "@/contexts/app-provider";
 
 const DropdownProfileBoard = () => {
+  const { handleModalUpdateBoard } = useAppContext();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -39,7 +41,10 @@ const DropdownProfileBoard = () => {
               </p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => handleModalUpdateBoard(true)}
+            >
               Update board
             </DropdownMenuItem>
           </DropdownMenuContent>

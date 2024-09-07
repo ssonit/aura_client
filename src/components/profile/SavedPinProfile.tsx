@@ -8,9 +8,9 @@ import { getCookie } from "cookies-next";
 import { Pen } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
-const CurrentUserProfile = ({ id }: { id: string }) => {
+const SavedPinProfile = ({ id }: { id: string }) => {
   const access_token = getCookie("access_token") as string;
   const router = useRouter();
   const [data, setData] = useState<Board[]>([]);
@@ -28,6 +28,8 @@ const CurrentUserProfile = ({ id }: { id: string }) => {
 
     fetchData();
   }, [access_token]);
+
+  console.log("saved");
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -69,4 +71,4 @@ const CurrentUserProfile = ({ id }: { id: string }) => {
   );
 };
 
-export default CurrentUserProfile;
+export default memo(SavedPinProfile);

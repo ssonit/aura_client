@@ -1,7 +1,11 @@
 "use server";
 
 import { BASE_URL } from "@/constants";
-import { BoardPinResponse, BoardResponse } from "@/types/board";
+import {
+  BoardItemResponse,
+  BoardPinResponse,
+  BoardResponse,
+} from "@/types/board";
 import { ListPinResponse, Photo, PinCreated, PinDetail } from "@/types/pin";
 import { revalidateTag } from "next/cache";
 
@@ -86,6 +90,8 @@ export const handlePinCreated = async (
     body: JSON.stringify(payload),
   });
 
+  revalidateTag("board-pin-list");
+
   const data = await res.json();
 
   if (!res.ok) {
@@ -163,6 +169,9 @@ export const handleListBoardPin = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${access_token}`,
       },
+      next: {
+        tags: ["board-pin-list"],
+      },
     }
   );
 
@@ -173,4 +182,23 @@ export const handleListBoardPin = async (
   }
 
   return data as BoardPinResponse;
+};
+
+export const handleBoardItem = async (id: string, access_token: string) => {
+  const res = await fetch(BASE_URL + `/board/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    cache: "no-store",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data as BoardItemResponse;
 };
