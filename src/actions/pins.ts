@@ -1,8 +1,7 @@
 "use server";
 
-import envConfig from "@/config";
 import { BASE_URL } from "@/constants";
-import { BoardResponse } from "@/types/board";
+import { BoardPinResponse, BoardResponse } from "@/types/board";
 import { ListPinResponse, Photo, PinCreated, PinDetail } from "@/types/pin";
 import { revalidateTag } from "next/cache";
 
@@ -146,21 +145,32 @@ export const handleListBoardsByUser = async (access_token: string) => {
 };
 
 export const handleListBoardPin = async (
+  page: number,
+  limit: number = 10,
   boardId: string,
   access_token: string
 ) => {
-  const res = await fetch(BASE_URL + `/pin/${boardId}/board`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${access_token}`,
-    },
-  });
+  const searchParams = {
+    page: page.toString(),
+    limit: limit.toString(),
+  };
+
+  const res = await fetch(
+    BASE_URL + `/pin/${boardId}/board?` + new URLSearchParams(searchParams),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+
   const data = await res.json();
 
   if (!res.ok) {
     throw data;
   }
 
-  return data as BoardResponse;
+  return data as BoardPinResponse;
 };

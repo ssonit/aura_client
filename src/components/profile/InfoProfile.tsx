@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAppContext } from "@/contexts/app-provider";
 import { User } from "@/types/auth";
 import { getCookie } from "cookies-next";
-import { Share2, MoreHorizontal } from "lucide-react";
+import { Share2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
@@ -56,15 +56,11 @@ const InfoProfile = ({ id }: { id: string }) => {
         {user?.bio || "Creative designer and photography enthusiast"}
       </p>
       <div className="flex justify-center items-center space-x-2 mt-4">
-        <Button>Follow</Button>
         <Button variant="outline">
           <Share2 className="h-4 w-4 mr-2" />
           Share
         </Button>
-        <Button size="icon" variant="outline">
-          <MoreHorizontal className="h-4 w-4" />
-          <span className="sr-only">More options</span>
-        </Button>
+        <Button variant={"white"}>Edit profile</Button>
       </div>
     </div>
   );

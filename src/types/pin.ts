@@ -12,7 +12,7 @@ export interface Photo {
 }
 export type TPinCard = JSX.Element;
 
-interface Media {
+export interface Media {
   id: string;
   url: string;
   secure_url: string;

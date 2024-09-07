@@ -12,6 +12,7 @@ const DetailPage = async ({ params }: { params: { id: string } }) => {
   const access_token = getCookie("access_token", { cookies }) as string;
   const res = await handlePinDetail(id, access_token);
   const data = res.data;
+  if (!data) return null;
   return (
     <div className="mx-auto px-2 py-8">
       <div className="fixed z-[100] pl-4">

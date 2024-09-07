@@ -1,5 +1,5 @@
 import { User } from "./auth";
-import { Pin } from "./pin";
+import { Media, Pin } from "./pin";
 
 export interface BoardResponse {
   data: Board[];
@@ -22,6 +22,7 @@ export interface BoardPin {
   pin_id: string;
   board: Board;
   pin: Pin;
+  media: Media;
   created_at: string;
   updated_at: string;
 }

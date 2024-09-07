@@ -5,13 +5,18 @@ import { useEffect, useState } from "react";
 import MasonicColumns from "./MasonicColumns";
 import { Photo } from "@/types/pin";
 import { dynamicBlurDataColor } from "@/utils/helpers";
-import { fetchPins, handleListPins } from "@/actions/pins";
+import { handleListBoardPin } from "@/actions/pins";
 import { getCookie } from "cookies-next";
 
 let page = 2;
-let pagePin = 2;
 
-const MasonryInfinityScroll = ({ initData }: { initData: Photo[] }) => {
+const MasonryBoardPin = ({
+  initData,
+  boardId,
+}: {
+  initData: Photo[];
+  boardId: string;
+}) => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -25,21 +30,17 @@ const MasonryInfinityScroll = ({ initData }: { initData: Photo[] }) => {
 
   const [data, setData] = useState<Photo[]>(initData);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasMoreData, setHasMoreData] = useState(true); // Trạng thái kiểm soát
   const access_token = getCookie("access_token") as string;
 
   async function fetchData() {
     try {
       setIsLoading(true);
       let pins: Photo[] = [];
-      const res = await handleListPins(page, 10, access_token);
+      const res = await handleListBoardPin(page, 10, boardId, access_token);
       if (!res.data) {
-        const result = await fetchPins(pagePin, 10);
-        pins = result.map((item) => ({
-          ...item,
-          placeholder: dynamicBlurDataColor(),
-          isAura: false,
-        }));
-        pagePin++;
+        setHasMoreData(false);
+        return;
       }
       if (res.data) {
         pins = res.data.map(
@@ -47,11 +48,11 @@ const MasonryInfinityScroll = ({ initData }: { initData: Photo[] }) => {
             ({
               author: "",
               download_url: item.media.url,
-              id: item.id,
-              placeholder: dynamicBlurDataColor(),
               height: item.media.height,
               width: item.media.width,
               url: item.media.url,
+              id: item.pin_id,
+              placeholder: dynamicBlurDataColor(),
               isAura: true,
             } as Photo)
         );
@@ -68,11 +69,11 @@ const MasonryInfinityScroll = ({ initData }: { initData: Photo[] }) => {
   }
 
   useEffect(() => {
-    if (inView && !isLoading) {
+    if (inView && !isLoading && hasMoreData) {
       fetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView, isLoading]);
+  }, [inView, isLoading, hasMoreData]);
 
   return (
     <>
@@ -88,4 +89,4 @@ const MasonryInfinityScroll = ({ initData }: { initData: Photo[] }) => {
   );
 };
 
-export default MasonryInfinityScroll;
+export default MasonryBoardPin;

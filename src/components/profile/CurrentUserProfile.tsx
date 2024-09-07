@@ -37,7 +37,7 @@ const CurrentUserProfile = ({ id }: { id: string }) => {
             key={board.id}
             className="relative overflow-hidden group cursor-pointer"
             onClick={() => {
-              router.push(`/profile/${id}/${board.id}`);
+              router.push(`/profile/${id}/board/${board.id}`);
             }}
           >
             <div className="relative">
@@ -47,6 +47,7 @@ const CurrentUserProfile = ({ id }: { id: string }) => {
                   className="object-cover transition-transform rounded-lg"
                   fill
                   src={"/assets/E9E9E9.jpg"}
+                  sizes="(max-width: 50px) 2vw, (max-width: 425px) 50vw, 75vw"
                 />
               </AspectRatio>
               <Button
