@@ -1,7 +1,8 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
-import { SaveIcon } from "lucide-react";
-import CustomImage from "./CustomImage";
+import { Pen, SaveIcon } from "lucide-react";
+import CustomImage from "@/components/global/CustomImage";
 import { Photo } from "@/types/pin";
 import { useRouter } from "next/navigation";
 
@@ -9,7 +10,7 @@ interface Props {
   item: Photo;
 }
 
-const PinCard = ({ item }: Props) => {
+const PinCardProfile = ({ item }: Props) => {
   const router = useRouter();
   const handleCardClick = () => {
     if (item.isAura) {
@@ -31,15 +32,14 @@ const PinCard = ({ item }: Props) => {
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
           <div className="absolute top-1 right-1 pointer-events-auto">
             <Button
-              variant="destructive"
+              className="z-30 group-hover:opacity-100 transition-opacity rounded-full"
               size="icon"
-              className="text-white"
+              variant="secondary"
               onClick={() => {
-                // Logic của button
+                router.push(`/pin/edit/${item.id}`);
               }}
             >
-              <SaveIcon className="w-5 h-5" />
-              <span className="sr-only">Save</span>
+              <Pen className="w-4 h-4"></Pen>
             </Button>
           </div>
         </div>
@@ -48,4 +48,4 @@ const PinCard = ({ item }: Props) => {
   );
 };
 
-export default PinCard;
+export default PinCardProfile;

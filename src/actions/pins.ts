@@ -47,6 +47,7 @@ export const handleListPins = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${access_token}`,
       },
+      cache: "no-store",
     }
   );
   const data = await res.json();
@@ -89,8 +90,6 @@ export const handlePinCreated = async (
     },
     body: JSON.stringify(payload),
   });
-
-  revalidateTag("board-pin-list");
 
   const data = await res.json();
 
@@ -169,9 +168,7 @@ export const handleListBoardPin = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${access_token}`,
       },
-      next: {
-        tags: ["board-pin-list"],
-      },
+      cache: "no-store",
     }
   );
 

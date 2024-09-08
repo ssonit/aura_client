@@ -6,7 +6,8 @@ import { Photo } from "@/types/pin";
 import { dynamicBlurDataColor } from "@/utils/helpers";
 import { handleListPins } from "@/actions/pins";
 import { getCookie } from "cookies-next";
-import MasonicColumns from "@/components/global/MasonicColumns";
+import { Masonry } from "masonic";
+import PinCardProfile from "@/components/profile/PinCardProfile";
 
 let page = 2;
 
@@ -81,7 +82,13 @@ const MasonryCreatedPin = ({
       <>
         {isClient && (
           <div className="w-full">
-            <MasonicColumns data={data} />
+            <Masonry
+              items={data}
+              columnGutter={16}
+              columnWidth={236}
+              overscanBy={5}
+              render={({ data }) => <PinCardProfile item={data} />}
+            />
             <section className="flex justify-center items-center w-full mt-20">
               <div ref={ref}></div>
             </section>

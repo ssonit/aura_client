@@ -6,6 +6,7 @@ import BackButton from "@/components/global/BackButton";
 import { handlePinDetail } from "@/actions/pins";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
+import PinDetail from "@/components/pin/PinDetail";
 
 const DetailPage = async ({ params }: { params: { id: string } }) => {
   const { id } = params;
@@ -38,54 +39,13 @@ const DetailPage = async ({ params }: { params: { id: string } }) => {
         </div>
 
         {/* Pin Details */}
-        <div className="md:w-1/2">
-          <div className="p-3 space-y-6">
-            <div className="flex justify-between items-center">
-              <Button variant="outline" size="icon">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon">
-                <Share className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <h1 className="text-3xl font-bold text-muted pointer-events-none">
-              {data.title ? data.title : "Beautiful Landscape Photography"}
-            </h1>
-
-            <p className="text-muted-foreground">
-              {data.description
-                ? data.description
-                : "Capture the essence of nature with these stunning landscape photography techniques. Learn how to use light, composition, and perspective to create breathtaking images."}
-            </p>
-
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src={data.user.avatar} alt="@username" />
-                <AvatarFallback>AV</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="font-semibold text-muted">{data.user.username}</p>
-                <p className="text-sm text-muted-foreground">1.5k followers</p>
-              </div>
-            </div>
-
-            <div className="flex space-x-4">
-              <Button className="flex-1">
-                <Heart className="mr-2 h-4 w-4" /> Save
-              </Button>
-              <Button variant="outline">
-                <Download className="mr-2 h-4 w-4" /> Download
-              </Button>
-            </div>
-          </div>
-        </div>
+        <PinDetail data={data} />
       </div>
 
       {/* Related Pins */}
       <div className="mt-12 container">
         <h2 className="text-2xl font-bold mb-6 text-center">More like this</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {/* <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {[...Array(10)].map((_, i) => (
             <div key={i} className="relative group">
               <Image
@@ -104,7 +64,7 @@ const DetailPage = async ({ params }: { params: { id: string } }) => {
               </Button>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

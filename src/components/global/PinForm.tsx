@@ -268,7 +268,7 @@ const PinForm = ({ initData, boards }: Props) => {
           />
           <div className="text-center">
             <Button type="submit" disabled={isLoading}>
-              Submit
+              {initData ? "Update" : "Create"}
             </Button>
           </div>
         </div>
