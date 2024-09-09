@@ -161,7 +161,9 @@ export const handleListBoardPin = async (
   };
 
   const res = await fetch(
-    BASE_URL + `/pin/${boardId}/board?` + new URLSearchParams(searchParams),
+    BASE_URL +
+      `/pin/board-pin/${boardId}/pins?` +
+      new URLSearchParams(searchParams),
     {
       method: "GET",
       headers: {

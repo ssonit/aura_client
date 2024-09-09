@@ -136,72 +136,74 @@ const PinForm = ({ initData, boards }: Props) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="gap-8 flex justify-start "
       >
-        <div className="space-y-2 flex-[2]">
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="imageInput">Image</Label>
-                  <div className="flex items-center space-x-2">
-                    <ImageIcon className="h-4 w-4" />
-                    <Switch
-                      id="image-input-mode"
-                      checked={isUrlInput}
-                      onCheckedChange={(checked) => {
-                        setIsUrlInput(checked);
-                        handleRemoveImage();
-                      }}
-                    />
-                    <LinkIcon className="h-4 w-4" />
+        {!initData && (
+          <div className="space-y-2 flex-[2]">
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="imageInput">Image</Label>
+                    <div className="flex items-center space-x-2">
+                      <ImageIcon className="h-4 w-4" />
+                      <Switch
+                        id="image-input-mode"
+                        checked={isUrlInput}
+                        onCheckedChange={(checked) => {
+                          setIsUrlInput(checked);
+                          handleRemoveImage();
+                        }}
+                      />
+                      <LinkIcon className="h-4 w-4" />
+                    </div>
                   </div>
-                </div>
-                <div className="mt-2">
-                  <ImagePreview
-                    url={form.getValues("imageUrl")}
-                    onSelectFile={isUrlInput ? () => {} : handleSelectFile}
-                    onRemove={handleRemoveImage}
-                  />
-                </div>
-                <FormControl>
-                  {isUrlInput ? (
-                    <Input
-                      placeholder="Enter the image URL"
-                      onChange={(e) => {
-                        const url = e.target.value;
-                        if (
-                          url.startsWith("http") ||
-                          url.startsWith("https") ||
-                          isImageURL(url)
-                        ) {
-                          setFile(null);
-                          field.onChange(url);
-                        }
-                      }}
+                  <div className="mt-2">
+                    <ImagePreview
+                      url={form.getValues("imageUrl")}
+                      onSelectFile={isUrlInput ? () => {} : handleSelectFile}
+                      onRemove={handleRemoveImage}
                     />
-                  ) : (
-                    <Input
-                      id="imageFile"
-                      type="file"
-                      accept="image/*"
-                      ref={fileInputRef}
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const url = URL.createObjectURL(file);
-                          field.onChange(url);
-                          setFile(file);
-                        }
-                      }}
-                    />
-                  )}
-                </FormControl>
-              </FormItem>
-            )}
-          ></FormField>
-        </div>
+                  </div>
+                  <FormControl>
+                    {isUrlInput ? (
+                      <Input
+                        placeholder="Enter the image URL"
+                        onChange={(e) => {
+                          const url = e.target.value;
+                          if (
+                            url.startsWith("http") ||
+                            url.startsWith("https") ||
+                            isImageURL(url)
+                          ) {
+                            setFile(null);
+                            field.onChange(url);
+                          }
+                        }}
+                      />
+                    ) : (
+                      <Input
+                        id="imageFile"
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const url = URL.createObjectURL(file);
+                            field.onChange(url);
+                            setFile(file);
+                          }
+                        }}
+                      />
+                    )}
+                  </FormControl>
+                </FormItem>
+              )}
+            ></FormField>
+          </div>
+        )}
         <div className="space-y-4 flex-[3]">
           <FormField
             control={form.control}
