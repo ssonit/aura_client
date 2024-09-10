@@ -58,3 +58,10 @@ export interface ListPinResponse {
   };
   filter: any;
 }
+
+export interface PinUpdate {
+  title: string;
+  description: string;
+  link_url: string;
+  board_id: string;
+}

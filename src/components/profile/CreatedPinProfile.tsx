@@ -9,7 +9,10 @@ import { memo } from "react";
 const CreatedPinProfile = async ({ id }: { id: string }) => {
   const access_token = getCookie("access_token", { cookies }) as string;
 
-  const res = await handleListPins(1, 20, access_token);
+  const res = await handleListPins(1, 20, access_token, {
+    user_id: id,
+    sort: "desc",
+  });
 
   if (!res.data)
     return <div className="text-center justify-center mt-10">Not found</div>;

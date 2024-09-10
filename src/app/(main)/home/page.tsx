@@ -8,7 +8,9 @@ import { cookies } from "next/headers";
 const HomePage = async () => {
   const access_token = getCookie("access_token", { cookies }) as string;
 
-  const res = await handleListPins(1, 20, access_token);
+  const res = await handleListPins(1, 20, access_token, {
+    sort: "desc",
+  });
 
   const pins = res.data.map(
     (item) =>

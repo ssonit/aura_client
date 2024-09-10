@@ -3,10 +3,17 @@
 import { BASE_URL } from "@/constants";
 import {
   BoardItemResponse,
+  BoardPinDetailResponse,
   BoardPinResponse,
   BoardResponse,
 } from "@/types/board";
-import { ListPinResponse, Photo, PinCreated, PinDetail } from "@/types/pin";
+import {
+  ListPinResponse,
+  Photo,
+  PinCreated,
+  PinDetail,
+  PinUpdate,
+} from "@/types/pin";
 import { revalidateTag } from "next/cache";
 
 export const fetchPins = async (page: number, limit: number = 10) => {
@@ -31,7 +38,7 @@ export const handleListPins = async (
   access_token: string,
   filter?: any
 ) => {
-  filter = {};
+  filter = filter || {};
 
   const searchParams = {
     page: page.toString(),
@@ -84,6 +91,33 @@ export const handlePinCreated = async (
 ) => {
   const res = await fetch(BASE_URL + "/pin/create", {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};
+
+export const handleUpdatePin = async ({
+  id,
+  payload,
+  access_token,
+}: {
+  id: string;
+  payload: PinUpdate;
+  access_token: string;
+}) => {
+  const res = await fetch(BASE_URL + `/pin/${id}`, {
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
@@ -200,4 +234,29 @@ export const handleBoardItem = async (id: string, access_token: string) => {
   }
 
   return data as BoardItemResponse;
+};
+
+export const handleBoardPinDetail = ({
+  pin_id,
+  access_token,
+}: {
+  pin_id: string;
+  access_token: string;
+}) => {
+  return fetch(BASE_URL + `/pin/board-pin/detail/${pin_id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    cache: "no-store",
+  }).then(async (res) => {
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw data;
+    }
+
+    return data as BoardPinDetailResponse;
+  });
 };

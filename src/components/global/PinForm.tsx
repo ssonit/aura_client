@@ -30,7 +30,9 @@ import { Board } from "@/types/board";
 import { useToast } from "@/components/ui/use-toast";
 import { handleUploadImage } from "@/actions/upload";
 import { getCookie } from "cookies-next";
-import { handlePinCreated } from "@/actions/pins";
+import { handlePinCreated, handleUpdatePin } from "@/actions/pins";
+import { useAppContext } from "@/contexts/app-provider";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
@@ -41,13 +43,15 @@ const formSchema = z.object({
 });
 
 interface Props {
-  initData?: z.infer<typeof formSchema>;
+  initData?: z.infer<typeof formSchema> & { pin_id?: string };
   boards: Board[];
 }
 
 const PinForm = ({ initData, boards }: Props) => {
   const { toast } = useToast();
+  const router = useRouter();
   const access_token = getCookie("access_token") as string;
+  const { user } = useAppContext();
   const [isUrlInput, setIsUrlInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -100,35 +104,60 @@ const PinForm = ({ initData, boards }: Props) => {
     }
     setIsLoading(true);
     try {
-      let resUpload;
-      if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        resUpload = await handleUploadImage(formData, access_token);
-      }
+      if (initData && initData.pin_id) {
+        await handleUpdatePin({
+          id: initData.pin_id,
+          payload: {
+            title: values.title,
+            description: values.description,
+            link_url: values.linkUrl || "",
+            board_id: values.selectedBoard,
+          },
+          access_token,
+        });
 
-      const res = await handlePinCreated(
-        {
-          title: values.title,
-          description: values.description,
-          board_id: values.selectedBoard,
-          link_url: values.linkUrl,
-          media_id: resUpload ? resUpload.data.id : values.imageUrl,
-        },
-        access_token
-      );
-      console.log(res);
+        toast({
+          title: "Pin updated successfully!",
+        });
+      } else {
+        let resUpload;
+        if (file) {
+          const formData = new FormData();
+          formData.append("file", file);
+          resUpload = await handleUploadImage(formData, access_token);
+          if (!resUpload) {
+            toast({
+              title: "Failed to upload image!",
+            });
+            return;
+          }
+          await handlePinCreated(
+            {
+              title: values.title,
+              description: values.description,
+              board_id: values.selectedBoard,
+              link_url: values.linkUrl,
+              media_id: resUpload.data.id,
+            },
+            access_token
+          );
+        }
+
+        form.reset();
+        handleRemoveImage();
+        toast({
+          title: "Pin created successfully!",
+        });
+      }
     } catch (error) {
       console.log(error, "error");
     } finally {
       setIsLoading(false);
     }
 
-    form.reset();
-    handleRemoveImage();
-    toast({
-      title: "Pin created successfully!",
-    });
+    if (user) {
+      router.push(`/profile/${user.id}/_created`);
+    }
   }
   return (
     <Form {...form}>

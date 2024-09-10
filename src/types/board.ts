@@ -20,11 +20,18 @@ export interface BoardPin {
   id: string;
   board_id: string;
   pin_id: string;
+  user_id: string;
   board: Board;
   pin: Pin;
   media: Media;
+  user: User;
   created_at: string;
   updated_at: string;
+}
+
+export interface BoardPinDetailResponse {
+  data: BoardPin;
+  filter: any;
 }
 
 export interface BoardPinResponse {
