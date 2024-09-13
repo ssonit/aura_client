@@ -12,7 +12,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import envConfig from "@/config";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { useAppContext } from "@/contexts/app-provider";
+import authApiRequest from "@/actions/auth";
+import PasswordInput from "./PasswordInput";
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -22,6 +27,10 @@ const formSchema = z.object({
 });
 
 const RegisterForm = () => {
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
+  const { setUser } = useAppContext();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,8 +40,38 @@ const RegisterForm = () => {
       confirmPassword: "",
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+    try {
+      if (values.password !== values.confirmPassword) {
+        toast({
+          title: "Password and confirm password must be the same",
+        });
+        return;
+      }
+      const result = await authApiRequest.register(values);
+
+      const resultFromNextServer = await authApiRequest.authTokenNextServer(
+        result.token
+      );
+
+      console.log(resultFromNextServer);
+
+      setUser(result.data);
+
+      toast({
+        title: "Register successful",
+      });
+
+      router.push("/home");
+      router.refresh();
+    } catch (error) {
+      toast({
+        title: (error as any)?.message,
+      });
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <Form {...form}>
@@ -71,11 +110,7 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Enter password"
-                  {...field}
-                />
+                <PasswordInput {...field}></PasswordInput>
               </FormControl>
             </FormItem>
           )}
@@ -87,16 +122,12 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Confirm password"
-                  {...field}
-                />
+                <PasswordInput {...field}></PasswordInput>
               </FormControl>
             </FormItem>
           )}
         />
-        <Button type="submit" className="py-5">
+        <Button disabled={loading} type="submit" className="py-5">
           Register
         </Button>
       </form>

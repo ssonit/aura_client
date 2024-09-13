@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ImageIcon, SearchIcon, UploadIcon } from "lucide-react";
+import { ImageIcon, UploadIcon } from "lucide-react";
 import Link from "next/link";
 import HeaderAvatar from "./HeaderAvatar";
+import SearchPin from "./SearchPin";
 
 const HeaderPin = () => {
   return (
@@ -17,21 +17,8 @@ const HeaderPin = () => {
           <h1 className="text-2xl font-bold px-1">Aura</h1>
         </div>
       </Link>
+      <SearchPin></SearchPin>
       <div className="flex items-center gap-4">
-        <form className="relative w-full max-w-md">
-          <Input
-            type="search"
-            placeholder="Search images..."
-            className="pr-10"
-          />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-2 top-1/2 -translate-y-1/2"
-          >
-            <SearchIcon className="w-5 h-5" />
-          </Button>
-        </form>
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon">
             <Link href="/pin/creation" prefetch={false}>

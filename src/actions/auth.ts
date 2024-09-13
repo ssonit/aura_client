@@ -22,6 +22,30 @@ const authApiRequest = {
 
     return payload as AuthResponse;
   },
+  register: async (data: {
+    email: string;
+    password: string;
+    username: string;
+  }) => {
+    const res = await fetch(
+      `${envConfig.NEXT_PUBLIC_API_ENDPOINT}/user/register`,
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const payload = await res.json();
+
+    if (!res.ok) {
+      throw payload;
+    }
+
+    return payload as AuthResponse;
+  },
   authTokenNextServer: async (data: Token) => {
     const res = await fetch(`${envConfig.NEXT_PUBLIC_URL}/api/auth`, {
       method: "POST",
