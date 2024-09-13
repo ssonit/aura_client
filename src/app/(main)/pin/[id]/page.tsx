@@ -1,19 +1,44 @@
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, Share, MoreHorizontal, Download } from "lucide-react";
 import Image from "next/image";
-import BackButton from "@/components/global/BackButton";
-import { handlePinDetail } from "@/actions/pins";
+import { handleListPins, handlePinDetail } from "@/actions/pins";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
-import PinDetail from "@/components/pin/PinDetail";
+import { Photo } from "@/types/pin";
+import { dynamicBlurDataColor } from "@/utils/helpers";
+import dynamic from "next/dynamic";
+import RelatedPins from "@/components/pin/RelatedPins";
+
+const BackButton = dynamic(() => import("@/components/global/BackButton"), {
+  ssr: false,
+});
+
+const PinDetail = dynamic(() => import("@/components/pin/PinDetail"), {
+  ssr: false,
+});
 
 const DetailPage = async ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const access_token = getCookie("access_token", { cookies }) as string;
   const res = await handlePinDetail(id, access_token);
+  const resListPins = await handleListPins(1, 20, access_token, {
+    sort: "desc",
+  });
   const data = res.data;
-  if (!data) return null;
+  if (!data || !resListPins.data) return null;
+
+  const pins = resListPins.data.map(
+    (item) =>
+      ({
+        author: "",
+        download_url: item.media.url,
+        id: item.id,
+        placeholder: dynamicBlurDataColor(),
+        height: item.media.height,
+        width: item.media.width,
+        url: item.media.url,
+        isAura: true,
+      } as Photo)
+  );
+
   return (
     <div className="mx-auto px-2 py-8">
       <div className="fixed z-[100] pl-4">
@@ -43,29 +68,7 @@ const DetailPage = async ({ params }: { params: { id: string } }) => {
       </div>
 
       {/* Related Pins */}
-      <div className="mt-12 container">
-        <h2 className="text-2xl font-bold mb-6 text-center">More like this</h2>
-        {/* <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {[...Array(10)].map((_, i) => (
-            <div key={i} className="relative group">
-              <Image
-                src={`https://picsum.photos/seed/picsum/200/300`}
-                alt={`Related Pin ${i + 1}`}
-                className="rounded-lg w-full h-auto object-cover"
-                width={200}
-                height={200 + i * 20}
-              />
-              <Button
-                variant="secondary"
-                size="sm"
-                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                Save
-              </Button>
-            </div>
-          ))}
-        </div> */}
-      </div>
+      <RelatedPins pins={pins}></RelatedPins>
     </div>
   );
 };

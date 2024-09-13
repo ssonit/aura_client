@@ -162,17 +162,32 @@ export const handleCreateBoard = async (payload: {
   return data;
 };
 
-export const handleListBoardsByUser = async (access_token: string) => {
-  const res = await fetch(BASE_URL + "/board", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${access_token}`,
-    },
-    next: {
-      tags: ["board-list"],
-    },
-  });
+export const handleListBoardsByUser = async ({
+  user_id,
+  access_token,
+}: {
+  user_id?: string;
+  access_token: string;
+}) => {
+  const searchParams: { userId?: string } = {};
+
+  if (user_id) {
+    searchParams["userId"] = user_id;
+  }
+
+  const res = await fetch(
+    BASE_URL + "/board?" + new URLSearchParams(searchParams),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${access_token}`,
+      },
+      next: {
+        tags: ["board-list"],
+      },
+    }
+  );
 
   const data = await res.json();
 

@@ -19,7 +19,7 @@ export default function ProfileLayout({
 
         <ProfileTabs tab={tab}></ProfileTabs>
 
-        <ProfileActions></ProfileActions>
+        <ProfileActions id={id}></ProfileActions>
 
         {children}
       </main>

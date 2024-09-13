@@ -31,7 +31,9 @@ const MasonryInfinityScroll = ({ initData }: { initData: Photo[] }) => {
     try {
       setIsLoading(true);
       let pins: Photo[] = [];
-      const res = await handleListPins(page, 10, access_token);
+      const res = await handleListPins(page, 20, access_token, {
+        sort: "desc",
+      });
       if (!res.data) {
         const result = await fetchPins(pagePin, 10);
         pins = result.map((item) => ({

@@ -39,6 +39,7 @@ const MasonryCreatedPin = ({
       setIsLoading(true);
       let pins: Photo[] = [];
       const res = await handleListPins(page, 10, access_token, {
+        sort: "desc",
         user_id,
       });
       if (!res.data) {

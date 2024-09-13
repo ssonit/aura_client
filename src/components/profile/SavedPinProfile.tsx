@@ -18,8 +18,7 @@ const SavedPinProfile = ({ id }: { id: string }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!access_token) return;
-        const res = await handleListBoardsByUser(access_token);
+        const res = await handleListBoardsByUser({ user_id: id, access_token });
         setData(res.data);
       } catch (error) {
         console.log(error);
@@ -27,7 +26,7 @@ const SavedPinProfile = ({ id }: { id: string }) => {
     };
 
     fetchData();
-  }, [access_token]);
+  }, [access_token, id]);
 
   console.log("saved");
 

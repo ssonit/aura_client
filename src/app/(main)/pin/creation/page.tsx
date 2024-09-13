@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 const CreatePinTool = async () => {
   const access_token = getCookie("access_token", { cookies }) as string;
-  const res = await handleListBoardsByUser(access_token);
+  const res = await handleListBoardsByUser({ user_id: "", access_token });
 
   if (!res.data) {
     return (

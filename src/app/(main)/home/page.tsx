@@ -12,6 +12,8 @@ const HomePage = async () => {
     sort: "desc",
   });
 
+  if (!res.data) return null;
+
   const pins = res.data.map(
     (item) =>
       ({

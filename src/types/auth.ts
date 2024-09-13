@@ -23,3 +23,7 @@ export interface AuthResponse {
   data: User;
   token: Token;
 }
+
+export interface UserResponse {
+  data: User;
+}
