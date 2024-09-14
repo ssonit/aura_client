@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@/types/auth";
 import {
   useState,
   useContext,
@@ -8,17 +9,6 @@ import {
   useEffect,
   useMemo,
 } from "react";
-
-type User = {
-  id: string;
-  email: string;
-  username: string;
-  avatar: string;
-  bio: string;
-  website: string;
-  created_at: string;
-  updated_at: string;
-};
 
 interface AppContextInterface {
   isModalOpen: boolean;

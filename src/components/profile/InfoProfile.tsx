@@ -47,8 +47,8 @@ const InfoProfile = ({ id }: { id: string }) => {
         className="mx-auto mb-4 rounded-full"
         height="128"
         src={
-          currentUser?.avatar
-            ? currentUser.avatar
+          currentUser?.avatar.url
+            ? currentUser.avatar.url
             : "https://i.pinimg.com/originals/fd/b7/ba/fdb7ba09d03f20492b24234c6b5a732a.jpg"
         }
         style={{

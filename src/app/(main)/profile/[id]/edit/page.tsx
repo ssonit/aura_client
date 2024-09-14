@@ -27,7 +27,7 @@ const EditProfilePage = async ({ params }: { params: { id: string } }) => {
       </CardHeader>
       <EditProfileForm
         initData={{
-          avatar: user.avatar,
+          avatar: user.avatar.url,
           username: user.username,
           bio: user.bio,
           website: user.website,

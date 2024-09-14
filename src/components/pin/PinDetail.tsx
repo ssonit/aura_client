@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, MoreHorizontal, Download } from "lucide-react";
+import { Heart, MoreHorizontal } from "lucide-react";
 import { Pin } from "@/types/pin";
 import { useRouter } from "next/navigation";
 import SocialShare from "@/components/global/SocialShare";
@@ -12,6 +12,7 @@ const PinDetail = ({ data }: { data: Pin }) => {
   const handleRedirectToUser = () => {
     router.push(`/profile/${data.user.id}/_saved`);
   };
+
   return (
     <div className="md:w-1/2">
       <div className="p-3 space-y-6">
@@ -50,7 +51,7 @@ const PinDetail = ({ data }: { data: Pin }) => {
           onClick={handleRedirectToUser}
         >
           <Avatar>
-            <AvatarImage src={data.user.avatar} alt="@username" />
+            <AvatarImage src={data.user.avatar.url} alt="@username" />
             <AvatarFallback>AV</AvatarFallback>
           </Avatar>
           <div>
