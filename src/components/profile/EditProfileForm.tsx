@@ -21,7 +21,9 @@ import { getCookie } from "cookies-next";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/contexts/app-provider";
-import { handleUploadImage } from "@/actions/upload";
+import { handleGetMedia, handleUploadImage } from "@/actions/upload";
+import { handleUpdateUser } from "@/actions/user";
+import { User } from "@/types/auth";
 
 const formSchema = z.object({
   avatar: z.string(),
@@ -31,14 +33,14 @@ const formSchema = z.object({
 });
 
 interface Props {
-  initData: z.infer<typeof formSchema>;
+  initData: z.infer<typeof formSchema> & { avatar_id: string; user_id: string };
 }
 
 const EditProfileForm = ({ initData }: Props) => {
   const access_token = getCookie("access_token") as string;
   const { toast } = useToast();
   const router = useRouter();
-  const { user } = useAppContext();
+  const { user, setUser } = useAppContext();
   const [fileAvatar, setFileAvatar] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -58,24 +60,52 @@ const EditProfileForm = ({ initData }: Props) => {
       });
       return;
     }
+    if (!user) return;
 
     setIsLoading(true);
     try {
       let resUpload;
       if (fileAvatar) {
-        // const formData = new FormData();
-        // formData.append("file", fileAvatar);
-        //   resUpload = await handleUploadImage(formData, access_token);
-        //   if (!resUpload) {
-        //     toast({
-        //       title: "Failed to upload image!",
-        //     });
-        //     return;
-        //   }
-        toast({
-          title: "Edit profile successfully!",
-        });
+        const formData = new FormData();
+        formData.append("file", fileAvatar);
+        resUpload = await handleUploadImage(formData, access_token);
+        if (!resUpload) {
+          toast({
+            title: "Failed to upload image!",
+          });
+          return;
+        }
       }
+
+      const avatar_id = resUpload ? resUpload.data.id : initData.avatar_id;
+
+      await handleUpdateUser({
+        id: initData.user_id,
+        payload: {
+          avatar_id: avatar_id,
+          username: values.username,
+          bio: values.bio,
+          website: values.website,
+        },
+        access_token,
+      });
+
+      const resMedia = await handleGetMedia(avatar_id, access_token);
+
+      setUser({
+        ...user,
+        avatar: resMedia.data,
+        avatar_id,
+        username: values.username,
+        bio: values.bio,
+        website: values.website,
+      });
+      toast({
+        title: "Edit profile successfully!",
+      });
+
+      router.push(`/profile/${initData.user_id}/_saved`);
+      router.refresh();
     } catch (error) {
       console.error(error);
       toast({

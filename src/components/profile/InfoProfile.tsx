@@ -7,6 +7,7 @@ import { User } from "@/types/auth";
 import { getCookie } from "cookies-next";
 import { Share2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -63,6 +64,11 @@ const InfoProfile = ({ id }: { id: string }) => {
       <p className="mt-2 text-gray-700">
         {currentUser?.bio || "Creative designer and photography enthusiast"}
       </p>
+      {currentUser?.website && (
+        <Link href={currentUser?.website} className="my-4 block text-blue-700">
+          {currentUser?.website}
+        </Link>
+      )}
       <div className="flex justify-center items-center space-x-2 mt-4">
         <Button variant="outline">
           <Share2 className="h-4 w-4 mr-2" />

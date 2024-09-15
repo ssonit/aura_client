@@ -23,7 +23,7 @@ const HeaderAvatar = () => {
       <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
         <Avatar className="h-10 w-10">
           <AvatarImage
-            className="rounded-full"
+            className="rounded-full object-cover"
             src={user.avatar.url}
             alt={user.id}
           />
@@ -40,7 +40,11 @@ const HeaderAvatar = () => {
       >
         <div className="flex items-center p-2">
           <Avatar className="h-9 w-9 mr-2">
-            <AvatarImage src={user.avatar?.url} alt={user.id} />
+            <AvatarImage
+              className="rounded-full object-cover"
+              src={user.avatar?.url}
+              alt={user.id}
+            />
             <AvatarFallback>
               <User className="h-5 w-5" />
             </AvatarFallback>
