@@ -9,7 +9,11 @@ import { BoardType } from "@/constants";
 const EditPin = async ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const access_token = getCookie("access_token", { cookies }) as string;
-  const res = await handleListBoardsByUser({ user_id: "", access_token });
+  const res = await handleListBoardsByUser({
+    user_id: "",
+    isPrivate: "true",
+    access_token,
+  });
   const resBoardPin = await handleBoardPinDetail({
     pin_id: id,
     access_token,

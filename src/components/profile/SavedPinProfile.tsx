@@ -19,15 +19,16 @@ const SavedPinProfile = ({ id }: { id: string }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      let isPrivate: boolean | null = false;
+      let isPrivate: boolean = false;
       if (!user) return;
       try {
         if (id === user.id) {
-          isPrivate = null;
+          isPrivate = true;
         }
+
         const res = await handleListBoardsByUser({
           user_id: id,
-          isPrivate: isPrivate !== null ? isPrivate.toString() : undefined,
+          isPrivate: isPrivate ? "true" : "false",
           access_token,
         });
         setData(res.data);
