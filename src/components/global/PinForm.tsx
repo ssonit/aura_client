@@ -102,6 +102,13 @@ const PinForm = ({ initData, boards }: Props) => {
       });
       return;
     }
+
+    if (values.title === "All Pins") {
+      toast({
+        title: "You can't create a pin in the 'All Pins' board!",
+      });
+      return;
+    }
     setIsLoading(true);
     try {
       if (initData && initData.pin_id) {

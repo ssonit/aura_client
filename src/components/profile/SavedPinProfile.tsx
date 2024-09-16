@@ -3,6 +3,7 @@
 import { handleListBoardsByUser } from "@/actions/pins";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
+import { useAppContext } from "@/contexts/app-provider";
 import { Board } from "@/types/board";
 import { getCookie } from "cookies-next";
 import { Pen } from "lucide-react";
@@ -13,12 +14,22 @@ import { memo, useEffect, useState } from "react";
 const SavedPinProfile = ({ id }: { id: string }) => {
   const access_token = getCookie("access_token") as string;
   const router = useRouter();
+  const { user } = useAppContext();
   const [data, setData] = useState<Board[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
+      let isPrivate: boolean | null = false;
+      if (!user) return;
       try {
-        const res = await handleListBoardsByUser({ user_id: id, access_token });
+        if (id === user.id) {
+          isPrivate = null;
+        }
+        const res = await handleListBoardsByUser({
+          user_id: id,
+          isPrivate: isPrivate !== null ? isPrivate.toString() : undefined,
+          access_token,
+        });
         setData(res.data);
       } catch (error) {
         console.log(error);
@@ -26,7 +37,7 @@ const SavedPinProfile = ({ id }: { id: string }) => {
     };
 
     fetchData();
-  }, [access_token, id]);
+  }, [access_token, id, user]);
 
   console.log("saved");
 

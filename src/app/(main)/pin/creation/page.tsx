@@ -4,6 +4,7 @@ import { handleListBoardsByUser } from "@/actions/pins";
 import { cookies } from "next/headers";
 import { getCookie } from "cookies-next";
 import { Suspense } from "react";
+import { BoardType } from "@/constants";
 
 const CreatePinTool = async () => {
   const access_token = getCookie("access_token", { cookies }) as string;
@@ -38,7 +39,11 @@ const CreatePinTool = async () => {
         </CardHeader>
         <Suspense fallback={<div>Loading...</div>}>
           <CardContent>
-            <PinForm boards={res.data} />
+            <PinForm
+              boards={res.data.filter(
+                (item) => item.type !== BoardType.AllPins
+              )}
+            />
           </CardContent>
         </Suspense>
       </Card>

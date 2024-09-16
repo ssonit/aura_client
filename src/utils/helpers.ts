@@ -102,3 +102,15 @@ export const isTokenExpiringSoon = (token: string) => {
 
   return decodedToken.exp * 1000 <= bufferTime;
 };
+
+export const omitByEmpty = (obj: any) => {
+  return Object.entries(obj).reduce(
+    (acc: { [key: string]: any }, [key, value]) => {
+      if (value !== "" && value !== null && value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {}
+  );
+};

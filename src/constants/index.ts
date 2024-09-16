@@ -6,3 +6,8 @@ export enum Tab {
   Created = "_created",
   Saved = "_saved",
 }
+
+export const BoardType = {
+  AllPins: "all_pins",
+  Custom: "custom",
+};

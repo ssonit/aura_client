@@ -14,6 +14,7 @@ import {
   PinDetail,
   PinUpdate,
 } from "@/types/pin";
+import { omitByEmpty } from "@/utils/helpers";
 import { revalidateTag } from "next/cache";
 
 export const fetchPins = async (page: number, limit: number = 10) => {
@@ -25,6 +26,7 @@ export const fetchPins = async (page: number, limit: number = 10) => {
       }),
     {
       method: "GET",
+      cache: "no-store",
     }
   );
   const data = await res.json();
@@ -164,19 +166,25 @@ export const handleCreateBoard = async (payload: {
 
 export const handleListBoardsByUser = async ({
   user_id,
+  isPrivate,
   access_token,
 }: {
   user_id?: string;
+  isPrivate?: string;
   access_token: string;
 }) => {
-  const searchParams: { userId?: string } = {};
+  const searchParams: { userId?: string; isPrivate?: string } = {};
 
   if (user_id) {
     searchParams["userId"] = user_id;
   }
 
+  if (isPrivate !== null || isPrivate !== undefined) {
+    searchParams["isPrivate"] = isPrivate;
+  }
+
   const res = await fetch(
-    BASE_URL + "/board?" + new URLSearchParams(searchParams),
+    BASE_URL + "/board?" + new URLSearchParams(omitByEmpty(searchParams)),
     {
       method: "GET",
       headers: {
@@ -251,7 +259,7 @@ export const handleBoardItem = async (id: string, access_token: string) => {
   return data as BoardItemResponse;
 };
 
-export const handleBoardPinDetail = ({
+export const handleBoardPinDetail = async ({
   pin_id,
   access_token,
 }: {

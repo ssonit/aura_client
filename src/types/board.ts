@@ -12,6 +12,7 @@ export interface Board {
   name: string;
   isPrivate: boolean;
   user: User;
+  type: string;
   created_at: string;
   updated_at: string;
 }
