@@ -64,4 +64,5 @@ export interface PinUpdate {
   description: string;
   link_url: string;
   board_id: string;
+  board_pin_id: string;
 }

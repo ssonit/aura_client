@@ -43,7 +43,10 @@ const formSchema = z.object({
 });
 
 interface Props {
-  initData?: z.infer<typeof formSchema> & { pin_id?: string };
+  initData?: z.infer<typeof formSchema> & {
+    pin_id: string;
+    board_pin_id: string;
+  };
   boards: Board[];
 }
 
@@ -119,6 +122,7 @@ const PinForm = ({ initData, boards }: Props) => {
             description: values.description,
             link_url: values.linkUrl || "",
             board_id: values.selectedBoard,
+            board_pin_id: initData.board_pin_id,
           },
           access_token,
         });

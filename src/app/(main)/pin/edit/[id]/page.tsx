@@ -4,6 +4,7 @@ import { handleBoardPinDetail, handleListBoardsByUser } from "@/actions/pins";
 import { cookies } from "next/headers";
 import { getCookie } from "cookies-next";
 import { Suspense } from "react";
+import { BoardType } from "@/constants";
 
 const EditPin = async ({ params }: { params: { id: string } }) => {
   const { id } = params;
@@ -15,7 +16,7 @@ const EditPin = async ({ params }: { params: { id: string } }) => {
   });
   if (!resBoardPin.data) return <div>Pin not found</div>;
 
-  const { pin, board_id } = resBoardPin.data;
+  const { pin, board_id, id: board_pin_id } = resBoardPin.data;
 
   return (
     <div className="container mx-auto p-4">
@@ -28,7 +29,9 @@ const EditPin = async ({ params }: { params: { id: string } }) => {
         <Suspense fallback={<div>Loading...</div>}>
           <CardContent>
             <PinForm
-              boards={res.data}
+              boards={res.data.filter(
+                (item) => item.type !== BoardType.AllPins
+              )}
               initData={{
                 title: pin.title,
                 description: pin.description,
@@ -36,6 +39,7 @@ const EditPin = async ({ params }: { params: { id: string } }) => {
                 linkUrl: pin.link_url,
                 selectedBoard: board_id,
                 pin_id: id,
+                board_pin_id: board_pin_id,
               }}
             />
           </CardContent>
