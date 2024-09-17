@@ -1,4 +1,5 @@
 import { handleBoardItem, handleListBoardPin } from "@/actions/pins";
+import ConfirmDeleteBoardModal from "@/components/global/ConfirmDeleteBoardModal";
 import MasonryBoardPin from "@/components/global/MasonryBoardPin";
 import UpdateBoardModal from "@/components/global/UpdateBoardModal";
 import DropdownProfileBoard from "@/components/profile/DropdownProfileBoard";
@@ -18,7 +19,6 @@ const ListPinInBoard = async ({ params }: { params: { boardId: string } }) => {
   const res = await handleListBoardPin(1, 10, boardId, access_token);
   const resBoardItem = await handleBoardItem(boardId, access_token);
 
-  console.log(Array.isArray(res.data));
   const listBoardPin = res.data === null ? [] : res.data;
 
   if (!listBoardPin || !resBoardItem.data)
@@ -66,7 +66,15 @@ const ListPinInBoard = async ({ params }: { params: { boardId: string } }) => {
           )}
         </div>
       </div>
-      <UpdateBoardModal board={resBoardItem.data}></UpdateBoardModal>
+      {resBoardItem && (
+        <>
+          <UpdateBoardModal board={resBoardItem.data}></UpdateBoardModal>
+          <ConfirmDeleteBoardModal
+            boardId={boardId}
+            boardName={resBoardItem.data.name}
+          ></ConfirmDeleteBoardModal>
+        </>
+      )}
     </div>
   );
 };

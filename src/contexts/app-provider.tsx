@@ -15,6 +15,8 @@ interface AppContextInterface {
   handleModalOpen: (isOpen: boolean) => void;
   isModalUpdateBoard: boolean;
   handleModalUpdateBoard: (isOpen: boolean) => void;
+  isModalConfirmDeleteBoard: boolean;
+  handleModalConfirmDeleteBoard: (isOpen: boolean) => void;
   user: User | null;
   setUser: (user: User | null) => void;
   isAuthenticated: boolean;
@@ -25,6 +27,8 @@ const initialAppContext: AppContextInterface = {
   handleModalOpen: () => {},
   isModalUpdateBoard: false,
   handleModalUpdateBoard: () => {},
+  isModalConfirmDeleteBoard: false,
+  handleModalConfirmDeleteBoard: () => {},
   user: null,
   setUser: () => {},
   isAuthenticated: false,
@@ -45,6 +49,9 @@ export default function AppContextProvider({
   const [isModalUpdateBoard, setIsModalUpdateBoard] = useState(
     initialAppContext.isModalUpdateBoard
   );
+  const [isModalConfirmDeleteBoard, setIsModalConfirmDeleteBoard] = useState(
+    initialAppContext.isModalConfirmDeleteBoard
+  );
   const [user, setUserState] = useState<User | null>(initialAppContext.user);
 
   const isAuthenticated = useMemo(() => Boolean(user), [user]);
@@ -63,6 +70,10 @@ export default function AppContextProvider({
     setIsModalUpdateBoard(isOpen);
   };
 
+  const handleModalConfirmDeleteBoard = (isOpen: boolean) => {
+    setIsModalConfirmDeleteBoard(isOpen);
+  };
+
   useEffect(() => {
     const _user = localStorage.getItem("user");
     setUserState(_user ? JSON.parse(_user) : null);
@@ -75,6 +86,8 @@ export default function AppContextProvider({
         handleModalOpen,
         isModalUpdateBoard,
         handleModalUpdateBoard,
+        isModalConfirmDeleteBoard,
+        handleModalConfirmDeleteBoard,
         user,
         setUser,
         isAuthenticated,

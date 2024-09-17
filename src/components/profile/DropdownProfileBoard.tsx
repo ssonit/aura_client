@@ -45,7 +45,10 @@ const DropdownProfileBoard = () => {
               className="cursor-pointer"
               onClick={() => handleModalUpdateBoard(true)}
             >
-              Update board
+              Edit board
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              Share
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

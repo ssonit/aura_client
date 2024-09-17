@@ -283,3 +283,87 @@ export const handleBoardPinDetail = async ({
     return data as BoardPinDetailResponse;
   });
 };
+
+export const handleUpdateBoard = async ({
+  id,
+  payload,
+  access_token,
+}: {
+  id: string;
+  payload: { name: string; isPrivate: boolean };
+  access_token: string;
+}) => {
+  const res = await fetch(BASE_URL + `/board/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};
+
+export const handleSoftDeleteBoard = async (
+  id: string,
+  access_token: string
+) => {
+  const res = await fetch(BASE_URL + `/board/${id}/soft-delete`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};
+
+export const handleRestoreBoard = async (id: string, access_token: string) => {
+  const res = await fetch(BASE_URL + `/board/${id}/restore`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};
+
+export const handleListDeletedBoards = async (access_token: string) => {
+  const res = await fetch(BASE_URL + "/board/deleted", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data as BoardResponse;
+};

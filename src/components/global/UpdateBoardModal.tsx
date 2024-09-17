@@ -23,8 +23,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAppContext } from "@/contexts/app-provider";
 import { getCookie } from "cookies-next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Board } from "@/types/board";
+import { handleSoftDeleteBoard, handleUpdateBoard } from "@/actions/pins";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -33,9 +36,15 @@ const FormSchema = z.object({
 
 const UpdateBoardModal = ({ board }: { board: Board }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
   const access_token = getCookie("access_token") as string;
 
-  const { isModalUpdateBoard, handleModalUpdateBoard } = useAppContext();
+  const {
+    isModalUpdateBoard,
+    handleModalUpdateBoard,
+    handleModalConfirmDeleteBoard,
+  } = useAppContext();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -45,9 +54,25 @@ const UpdateBoardModal = ({ board }: { board: Board }) => {
     },
   });
 
+  function handleDeleteBoard() {
+    handleModalConfirmDeleteBoard(true);
+  }
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
     try {
+      await handleUpdateBoard({
+        id: board.id,
+        payload: data,
+        access_token,
+      });
+
+      // Add a toast notification
+      toast({
+        title: "Board updated",
+      });
+
+      router.refresh();
     } catch (error) {
       console.log(error);
     } finally {
@@ -56,6 +81,8 @@ const UpdateBoardModal = ({ board }: { board: Board }) => {
     form.reset();
     handleModalUpdateBoard(false);
   }
+
+  console.log();
 
   return (
     <Dialog open={isModalUpdateBoard} onOpenChange={handleModalUpdateBoard}>
@@ -104,6 +131,19 @@ const UpdateBoardModal = ({ board }: { board: Board }) => {
                   </FormItem>
                 )}
               />
+              <div className="flex flex-col gap-4">
+                <FormLabel>Action</FormLabel>
+                <div
+                  className="flex flex-col cursor-pointer gap-2"
+                  onClick={handleDeleteBoard}
+                >
+                  <h2 className="text-2xl">Delete board</h2>
+                  <p className="text-muted-foreground text-sm">
+                    You have 7 days to restore a deleted Board. After that, it
+                    will be permanently deleted.
+                  </p>
+                </div>
+              </div>
               <DialogFooter>
                 <Button type="submit" disabled={isLoading}>
                   Update Board

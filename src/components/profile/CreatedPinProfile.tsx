@@ -15,7 +15,11 @@ const CreatedPinProfile = async ({ id }: { id: string }) => {
   });
 
   if (!res.data)
-    return <div className="text-center justify-center mt-10">Not found</div>;
+    return (
+      <div className="text-center justify-center mt-10">
+        Nothing to show...yet! Pins you create will live here.
+      </div>
+    );
 
   const pins = res.data.map(
     (item) =>
