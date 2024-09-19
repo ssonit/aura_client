@@ -23,8 +23,12 @@ const SocialShare = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
-        <Button variant="outline" size="icon" className="">
-          <Share className="h-4 w-4 text-foreground" />
+        <Button
+          className="rounded-full bg-transparent hover:bg-foreground border-none"
+          variant="outline"
+          size="icon"
+        >
+          <Share className="h-4 w-4 stroke-black" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent

@@ -150,6 +150,7 @@ export const handleCreateBoard = async (payload: {
     body: JSON.stringify({
       name: payload.name,
       isPrivate: payload.isPrivate,
+      type: "custom",
     }),
   });
 
@@ -299,7 +300,10 @@ export const handleUpdateBoard = async ({
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      ...payload,
+      type: "custom",
+    }),
   });
 
   const data = await res.json();
@@ -366,4 +370,34 @@ export const handleListDeletedBoards = async (access_token: string) => {
   }
 
   return data as BoardResponse;
+};
+
+export const handleSaveBoardPin = async ({
+  pin_id,
+  board_id,
+  access_token,
+}: {
+  pin_id: string;
+  board_id: string;
+  access_token: string;
+}) => {
+  const res = await fetch(BASE_URL + `/pin/board-pin/save`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    body: JSON.stringify({
+      pin_id,
+      board_id,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
 };

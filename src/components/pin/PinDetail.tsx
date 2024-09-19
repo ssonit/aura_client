@@ -6,6 +6,7 @@ import { Heart, MoreHorizontal } from "lucide-react";
 import { Pin } from "@/types/pin";
 import { useRouter } from "next/navigation";
 import SocialShare from "@/components/global/SocialShare";
+import SaveBoardPin from "./SaveBoardPin";
 
 const PinDetail = ({ data }: { data: Pin }) => {
   const router = useRouter();
@@ -32,8 +33,9 @@ const PinDetail = ({ data }: { data: Pin }) => {
             >
               <MoreHorizontal className="h-4 w-4 stroke-black fill-black" />
             </Button>
+            <SocialShare></SocialShare>
           </div>
-          <SocialShare></SocialShare>
+          <SaveBoardPin pinId={data.id}></SaveBoardPin>
         </div>
 
         <h1 className="text-3xl font-bold text-muted pointer-events-none">
@@ -56,7 +58,6 @@ const PinDetail = ({ data }: { data: Pin }) => {
           </Avatar>
           <div>
             <p className="font-semibold text-muted">{data.user.username}</p>
-            {/* <p className="text-sm text-muted-foreground">1.5k followers</p> */}
           </div>
         </div>
       </div>

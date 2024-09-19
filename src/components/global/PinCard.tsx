@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { SaveIcon } from "lucide-react";
+import { Heart, SaveIcon } from "lucide-react";
 import CustomImage from "./CustomImage";
 import { Photo } from "@/types/pin";
 import { useRouter } from "next/navigation";
@@ -29,17 +29,17 @@ const PinCard = ({ item }: Props) => {
           />
         </div>
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-          <div className="absolute top-1 right-1 pointer-events-auto">
+          <div className="absolute top-1.5 right-1.5 pointer-events-auto">
             <Button
-              variant="destructive"
+              variant={"white"}
               size="icon"
-              className="text-white"
+              className="text-white rounded-full"
               onClick={() => {
                 // Logic của button
               }}
             >
-              <SaveIcon className="w-5 h-5" />
-              <span className="sr-only">Save</span>
+              <Heart className="w-5 h-5 stroke-red-500" />
+              <span className="sr-only">Like</span>
             </Button>
           </div>
         </div>

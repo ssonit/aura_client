@@ -168,6 +168,7 @@ const PinForm = ({ initData, boards }: Props) => {
 
     if (user) {
       router.push(`/profile/${user.id}/_created`);
+      router.refresh();
     }
   }
   return (

@@ -16,23 +16,6 @@ import { getCookie } from "cookies-next";
 import { Board } from "@/types/board";
 import { useRouter } from "next/navigation";
 
-// // Mock functions for fetching and restoring boards
-// const fetchDeletedBoards = async (): Promise<Board[]> => {
-//   // Simulating API call
-//   await new Promise((resolve) => setTimeout(resolve, 1000));
-//   return [
-//     { id: "1", name: "Project Alpha", deletedAt: "2023-06-15T10:30:00Z" },
-//     { id: "2", name: "Team Brainstorm", deletedAt: "2023-06-14T14:45:00Z" },
-//     { id: "3", name: "Personal Tasks", deletedAt: "2023-06-13T09:15:00Z" },
-//   ];
-// };
-
-// const restoreBoard = async (id: string): Promise<void> => {
-//   // Simulating API call
-//   await new Promise((resolve) => setTimeout(resolve, 500));
-//   console.log(`Board ${id} restored`);
-// };
-
 export default function RestoreBoardPage() {
   const router = useRouter();
   const access_token = getCookie("access_token") as string;
@@ -43,10 +26,11 @@ export default function RestoreBoardPage() {
   useEffect(() => {
     handleListDeletedBoards(access_token)
       .then((data) => {
-        setBoards(data.data);
+        setBoards(data.data ? data.data : []);
         setIsLoading(false);
       })
       .catch((err) => {
+        console.log(err);
         setError("Failed to fetch deleted boards. Please try again later.");
         setIsLoading(false);
       });

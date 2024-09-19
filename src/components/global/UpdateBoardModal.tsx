@@ -82,8 +82,6 @@ const UpdateBoardModal = ({ board }: { board: Board }) => {
     handleModalUpdateBoard(false);
   }
 
-  console.log();
-
   return (
     <Dialog open={isModalUpdateBoard} onOpenChange={handleModalUpdateBoard}>
       <DialogContent>
