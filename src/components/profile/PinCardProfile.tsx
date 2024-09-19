@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Pen, SaveIcon } from "lucide-react";
+import { Pen } from "lucide-react";
 import CustomImage from "@/components/global/CustomImage";
 import { Photo } from "@/types/pin";
 import { useRouter } from "next/navigation";

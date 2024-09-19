@@ -33,6 +33,7 @@ export interface Pin {
   link_url: string;
   user: User;
   media: Media;
+  isLiked: boolean;
   created_at: string;
   updated_at: string;
 }

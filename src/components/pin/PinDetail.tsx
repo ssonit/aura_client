@@ -2,11 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { Pin } from "@/types/pin";
 import { useRouter } from "next/navigation";
 import SocialShare from "@/components/global/SocialShare";
 import SaveBoardPin from "./SaveBoardPin";
+import LikePinButton from "./LikePinButton";
 
 const PinDetail = ({ data }: { data: Pin }) => {
   const router = useRouter();
@@ -19,13 +20,7 @@ const PinDetail = ({ data }: { data: Pin }) => {
       <div className="p-3 space-y-6">
         <div className="flex items-center justify-between">
           <div className="space-x-4">
-            <Button
-              className="rounded-full bg-transparent hover:bg-foreground border-none"
-              variant={"outline"}
-              size={"icon"}
-            >
-              <Heart className="h-4 w-4 stroke-red-500 fill-red-500" />
-            </Button>
+            <LikePinButton like={data.isLiked} pinId={data.id}></LikePinButton>
             <Button
               className="rounded-full bg-transparent hover:bg-foreground border-none"
               variant="outline"

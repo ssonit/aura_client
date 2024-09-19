@@ -401,3 +401,51 @@ export const handleSaveBoardPin = async ({
 
   return data;
 };
+
+export const handleLikePin = async ({
+  pin_id,
+  access_token,
+}: {
+  pin_id: string;
+  access_token: string;
+}) => {
+  const res = await fetch(BASE_URL + `/pin/${pin_id}/like`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};
+
+export const handleUnlikePin = async ({
+  pin_id,
+  access_token,
+}: {
+  pin_id: string;
+  access_token: string;
+}) => {
+  const res = await fetch(BASE_URL + `/pin/${pin_id}/unlike`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};
