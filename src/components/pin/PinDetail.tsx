@@ -31,7 +31,7 @@ const PinDetail = ({ data }: { data: Pin }) => {
 
   const handleRemoveComment = (commentId: string) => {
     setComments((prev) => prev.filter((comment) => comment.id !== commentId));
-  }
+  };
 
   useEffect(() => {
     async function fetchListComments() {
@@ -43,7 +43,9 @@ const PinDetail = ({ data }: { data: Pin }) => {
           limit: 10,
           access_token,
         });
-        setComments(res.data);
+        if (res.data) {
+          setComments(res.data);
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -99,7 +101,10 @@ const PinDetail = ({ data }: { data: Pin }) => {
           </div>
         </div>
         {comments.length > 0 ? (
-          <CommentList comments={comments} handleRemoveComment={handleRemoveComment}></CommentList>
+          <CommentList
+            comments={comments}
+            handleRemoveComment={handleRemoveComment}
+          ></CommentList>
         ) : null}
         <CommentInput
           handleAddComment={handleAddComment}

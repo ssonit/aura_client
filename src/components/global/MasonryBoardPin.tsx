@@ -7,16 +7,18 @@ import { dynamicBlurDataColor } from "@/utils/helpers";
 import { handleListBoardPin } from "@/actions/pins";
 import { getCookie } from "cookies-next";
 import { Masonry } from "masonic";
-import PinCardProfile from "@/components/profile/PinCardProfile";
+import BoardPinCard from "@/components/profile/BoardPinCard";
 
 let page = 2;
 
 const MasonryBoardPin = ({
   initData,
   boardId,
+  boardType,
 }: {
   initData: Photo[];
   boardId: string;
+  boardType: string;
 }) => {
   const [isClient, setIsClient] = useState(false);
 
@@ -47,12 +49,14 @@ const MasonryBoardPin = ({
         pins = res.data.map(
           (item) =>
             ({
-              author: "",
+              author: item.pin.user_id,
               download_url: item.media.url,
               height: item.media.height,
               width: item.media.width,
               url: item.media.url,
               id: item.pin_id,
+              board_pin_id: item.id,
+              user_id_pin: item.pin.user_id,
               placeholder: dynamicBlurDataColor(),
               isAura: true,
             } as Photo)
@@ -85,7 +89,9 @@ const MasonryBoardPin = ({
             columnGutter={16}
             columnWidth={236}
             overscanBy={5}
-            render={({ data }) => <PinCardProfile item={data} />}
+            render={({ data }) => (
+              <BoardPinCard item={data} boardType={boardType} />
+            )}
           />
           <section className="flex justify-center items-center w-full mt-20">
             <div ref={ref}></div>

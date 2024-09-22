@@ -6,14 +6,16 @@ import CustomImage from "@/components/global/CustomImage";
 import { Photo } from "@/types/pin";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/contexts/app-provider";
+import { BoardType } from "@/constants";
 
 interface Props {
   item: Photo;
+  boardType: string;
 }
 
-const PinCardProfile = ({ item }: Props) => {
+const BoardPinCard = ({ item, boardType }: Props) => {
   const router = useRouter();
-  const { user } = useAppContext();
+  const { handleModalBoardPinEdit } = useAppContext();
   const handleCardClick = () => {
     if (item.isAura) {
       router.push(`/pin/${item.id}`);
@@ -33,18 +35,23 @@ const PinCardProfile = ({ item }: Props) => {
         </div>
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
           <div className="absolute top-1 right-1 pointer-events-auto">
-            <Button
-              className="z-30 group-hover:opacity-100 transition-opacity rounded-full"
-              size="icon"
-              variant="secondary"
-              onClick={() => {
-                if (user?.id === item.author) {
-                  router.push(`/pin/edit/${item.id}`);
-                }
-              }}
-            >
-              <Pen className="w-4 h-4"></Pen>
-            </Button>
+            {boardType !== BoardType.AllPins ? (
+              <Button
+                className="z-30 group-hover:opacity-100 transition-opacity rounded-full"
+                size="icon"
+                variant="secondary"
+                onClick={() => {
+                  handleModalBoardPinEdit({
+                    user_id_pin: item.user_id_pin as string,
+                    pinId: item.id,
+                    boardPinId: item.board_pin_id as string,
+                    url: item.url,
+                  });
+                }}
+              >
+                <Pen className="w-4 h-4"></Pen>
+              </Button>
+            ) : null}
           </div>
         </div>
       </div>
@@ -52,4 +59,4 @@ const PinCardProfile = ({ item }: Props) => {
   );
 };
 
-export default PinCardProfile;
+export default BoardPinCard;

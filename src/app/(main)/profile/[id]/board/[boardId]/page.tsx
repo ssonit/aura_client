@@ -2,6 +2,7 @@ import { handleBoardItem, handleListBoardPin } from "@/actions/pins";
 import ConfirmDeleteBoardModal from "@/components/global/ConfirmDeleteBoardModal";
 import MasonryBoardPin from "@/components/global/MasonryBoardPin";
 import UpdateBoardModal from "@/components/global/UpdateBoardModal";
+import BoardPinEditModal from "@/components/profile/BoardPinEditModal";
 import DropdownProfileBoard from "@/components/profile/DropdownProfileBoard";
 import { Button } from "@/components/ui/button";
 import { BoardType } from "@/constants";
@@ -24,15 +25,19 @@ const ListPinInBoard = async ({ params }: { params: { boardId: string } }) => {
   if (!listBoardPin || !resBoardItem.data)
     return <div className="mt-10 text-center font-bold">Not Found</div>;
 
+  console.log(listBoardPin);
+
   const pins = listBoardPin.map(
     (item) =>
       ({
-        author: "",
+        author: item.pin.user_id,
         download_url: item.media.url,
         height: item.media.height,
         width: item.media.width,
         url: item.media.url,
         id: item.pin_id,
+        board_pin_id: item.id,
+        user_id_pin: item.pin.user_id,
         placeholder: dynamicBlurDataColor(),
         isAura: true,
       } as Photo)
@@ -61,9 +66,13 @@ const ListPinInBoard = async ({ params }: { params: { boardId: string } }) => {
               </Button>
             </div>
           )}
-          {pins.length > 0 && (
-            <MasonryBoardPin initData={pins} boardId={boardId} />
-          )}
+          {pins.length > 0 && resBoardItem ? (
+            <MasonryBoardPin
+              initData={pins}
+              boardId={boardId}
+              boardType={resBoardItem.data.type}
+            />
+          ) : null}
         </div>
       </div>
       {resBoardItem && (
@@ -73,6 +82,7 @@ const ListPinInBoard = async ({ params }: { params: { boardId: string } }) => {
             boardId={boardId}
             boardName={resBoardItem.data.name}
           ></ConfirmDeleteBoardModal>
+          <BoardPinEditModal boardId={boardId}></BoardPinEditModal>
         </>
       )}
     </div>

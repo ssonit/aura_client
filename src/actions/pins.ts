@@ -449,3 +449,32 @@ export const handleUnlikePin = async ({
 
   return data;
 };
+
+export const handleUnSaveBoardPin = async ({
+  board_pin_id,
+  pin_id,
+  access_token,
+}: {
+  board_pin_id: string;
+  pin_id: string;
+  access_token: string;
+}) => {
+  const res = await fetch(
+    BASE_URL + `/pin/board-pin/${board_pin_id}/unsave/${pin_id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};

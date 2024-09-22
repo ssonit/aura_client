@@ -50,7 +50,7 @@ const MasonryCreatedPin = ({
         pins = res.data.map(
           (item) =>
             ({
-              author: "",
+              author: item.user_id,
               download_url: item.media.url,
               height: item.media.height,
               width: item.media.width,

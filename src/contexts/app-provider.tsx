@@ -1,6 +1,7 @@
 "use client";
 
 import { User } from "@/types/auth";
+import { BoardPinModalEdit } from "@/types/pin";
 import {
   useState,
   useContext,
@@ -17,6 +18,8 @@ interface AppContextInterface {
   handleModalUpdateBoard: (isOpen: boolean) => void;
   isModalConfirmDeleteBoard: boolean;
   handleModalConfirmDeleteBoard: (isOpen: boolean) => void;
+  isModalBoardPinEdit: BoardPinModalEdit;
+  handleModalBoardPinEdit: (payload: BoardPinModalEdit) => void;
   user: User | null;
   setUser: (user: User | null) => void;
   isAuthenticated: boolean;
@@ -29,6 +32,8 @@ const initialAppContext: AppContextInterface = {
   handleModalUpdateBoard: () => {},
   isModalConfirmDeleteBoard: false,
   handleModalConfirmDeleteBoard: () => {},
+  isModalBoardPinEdit: { boardPinId: "", url: "", pinId: "", user_id_pin: "" },
+  handleModalBoardPinEdit: () => {},
   user: null,
   setUser: () => {},
   isAuthenticated: false,
@@ -52,6 +57,9 @@ export default function AppContextProvider({
   const [isModalConfirmDeleteBoard, setIsModalConfirmDeleteBoard] = useState(
     initialAppContext.isModalConfirmDeleteBoard
   );
+  const [isModalBoardPinEdit, setIsModalBoardPinEdit] = useState(
+    initialAppContext.isModalBoardPinEdit
+  );
   const [user, setUserState] = useState<User | null>(initialAppContext.user);
 
   const isAuthenticated = useMemo(() => Boolean(user), [user]);
@@ -74,6 +82,10 @@ export default function AppContextProvider({
     setIsModalConfirmDeleteBoard(isOpen);
   };
 
+  const handleModalBoardPinEdit = (payload: BoardPinModalEdit) => {
+    setIsModalBoardPinEdit(payload);
+  };
+
   useEffect(() => {
     const _user = localStorage.getItem("user");
     setUserState(_user ? JSON.parse(_user) : null);
@@ -88,6 +100,8 @@ export default function AppContextProvider({
         handleModalUpdateBoard,
         isModalConfirmDeleteBoard,
         handleModalConfirmDeleteBoard,
+        isModalBoardPinEdit,
+        handleModalBoardPinEdit,
         user,
         setUser,
         isAuthenticated,

@@ -25,7 +25,7 @@ import { useAppContext } from "@/contexts/app-provider";
 import { getCookie } from "cookies-next";
 import { useState } from "react";
 import { Board } from "@/types/board";
-import { handleSoftDeleteBoard, handleUpdateBoard } from "@/actions/pins";
+import { handleUpdateBoard } from "@/actions/pins";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 

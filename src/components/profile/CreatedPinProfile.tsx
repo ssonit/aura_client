@@ -24,7 +24,7 @@ const CreatedPinProfile = async ({ id }: { id: string }) => {
   const pins = res.data.map(
     (item) =>
       ({
-        author: "",
+        author: item.user_id,
         download_url: item.media.url,
         id: item.id,
         placeholder: dynamicBlurDataColor(),
