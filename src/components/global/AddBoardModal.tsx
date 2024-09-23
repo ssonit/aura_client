@@ -25,6 +25,8 @@ import { useAppContext } from "@/contexts/app-provider";
 import { handleCreateBoard } from "@/actions/pins";
 import { getCookie } from "cookies-next";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -32,6 +34,7 @@ const FormSchema = z.object({
 });
 
 const AddBoardModal = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const access_token = getCookie("access_token") as string;
 
@@ -51,6 +54,7 @@ const AddBoardModal = () => {
         isPrivate: data.isPrivate,
         access_token,
       });
+      router.refresh();
     } catch (error) {
       console.log(error);
     } finally {

@@ -69,7 +69,12 @@ const HeaderAvatar = () => {
         >
           Profile
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">Settings</DropdownMenuItem>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => router.push(`/profile/${user.id}/recycle-pin`)}
+        >
+          Recycle Pin
+        </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">
           Notifications
         </DropdownMenuItem>

@@ -25,8 +25,6 @@ const ListPinInBoard = async ({ params }: { params: { boardId: string } }) => {
   if (!listBoardPin || !resBoardItem.data)
     return <div className="mt-10 text-center font-bold">Not Found</div>;
 
-  console.log(listBoardPin);
-
   const pins = listBoardPin.map(
     (item) =>
       ({

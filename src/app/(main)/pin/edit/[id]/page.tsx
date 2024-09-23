@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { getCookie } from "cookies-next";
 import { Suspense } from "react";
 import { BoardType } from "@/constants";
+import SoftDeletePinModal from "@/components/pin/SoftDeletePinModal";
 
 const EditPin = async ({ params }: { params: { id: string } }) => {
   const { id } = params;
@@ -49,6 +50,12 @@ const EditPin = async ({ params }: { params: { id: string } }) => {
           </CardContent>
         </Suspense>
       </Card>
+      {pin ? (
+        <SoftDeletePinModal
+          pinId={pin.id}
+          pinName={pin.title}
+        ></SoftDeletePinModal>
+      ) : null}
     </div>
   );
 };

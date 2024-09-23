@@ -54,7 +54,7 @@ const PinForm = ({ initData, boards }: Props) => {
   const { toast } = useToast();
   const router = useRouter();
   const access_token = getCookie("access_token") as string;
-  const { user } = useAppContext();
+  const { user, handleModalSoftDeletePin } = useAppContext();
   const [isUrlInput, setIsUrlInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -309,9 +309,20 @@ const PinForm = ({ initData, boards }: Props) => {
               </FormItem>
             )}
           />
-          <div className="text-center">
+          <div className="text-center flex items-center justify-center gap-4">
+            {initData ? (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => {
+                  handleModalSoftDeletePin(true);
+                }}
+              >
+                Delete
+              </Button>
+            ) : null}
             <Button type="submit" disabled={isLoading}>
-              {initData ? "Update" : "Create"}
+              {initData ? "Save" : "Create"}
             </Button>
           </div>
         </div>

@@ -20,6 +20,8 @@ interface AppContextInterface {
   handleModalConfirmDeleteBoard: (isOpen: boolean) => void;
   isModalBoardPinEdit: BoardPinModalEdit;
   handleModalBoardPinEdit: (payload: BoardPinModalEdit) => void;
+  isModalSoftDeletePin: boolean;
+  handleModalSoftDeletePin: (isOpen: boolean) => void;
   user: User | null;
   setUser: (user: User | null) => void;
   isAuthenticated: boolean;
@@ -34,6 +36,8 @@ const initialAppContext: AppContextInterface = {
   handleModalConfirmDeleteBoard: () => {},
   isModalBoardPinEdit: { boardPinId: "", url: "", pinId: "", user_id_pin: "" },
   handleModalBoardPinEdit: () => {},
+  isModalSoftDeletePin: false,
+  handleModalSoftDeletePin: () => {},
   user: null,
   setUser: () => {},
   isAuthenticated: false,
@@ -59,6 +63,9 @@ export default function AppContextProvider({
   );
   const [isModalBoardPinEdit, setIsModalBoardPinEdit] = useState(
     initialAppContext.isModalBoardPinEdit
+  );
+  const [isModalSoftDeletePin, setIsModalSoftDeletePin] = useState(
+    initialAppContext.isModalSoftDeletePin
   );
   const [user, setUserState] = useState<User | null>(initialAppContext.user);
 
@@ -86,6 +93,10 @@ export default function AppContextProvider({
     setIsModalBoardPinEdit(payload);
   };
 
+  const handleModalSoftDeletePin = (isOpen: boolean) => {
+    setIsModalSoftDeletePin(isOpen);
+  };
+
   useEffect(() => {
     const _user = localStorage.getItem("user");
     setUserState(_user ? JSON.parse(_user) : null);
@@ -102,6 +113,8 @@ export default function AppContextProvider({
         handleModalConfirmDeleteBoard,
         isModalBoardPinEdit,
         handleModalBoardPinEdit,
+        isModalSoftDeletePin,
+        handleModalSoftDeletePin,
         user,
         setUser,
         isAuthenticated,

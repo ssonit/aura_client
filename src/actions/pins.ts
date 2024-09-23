@@ -478,3 +478,73 @@ export const handleUnSaveBoardPin = async ({
 
   return data;
 };
+
+export const handleListSoftDeletedPins = async ({
+  access_token,
+}: {
+  access_token: string;
+}) => {
+  const res = await fetch(BASE_URL + "/pin/soft-deleted", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data as ListPinResponse;
+};
+
+export const handleRestorePin = async ({
+  id,
+  access_token,
+}: {
+  id: string;
+  access_token: string;
+}) => {
+  const res = await fetch(BASE_URL + `/pin/${id}/restore`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};
+
+export const handleSoftDeletePin = async ({
+  id,
+  access_token,
+}: {
+  id: string;
+  access_token: string;
+}) => {
+  const res = await fetch(BASE_URL + `/pin/${id}/soft-delete`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};

@@ -11,8 +11,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { memo, useEffect, useMemo, useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const SavedPinProfile = ({ id }: { id: string }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const access_token = getCookie("access_token") as string;
   const router = useRouter();
   const { user } = useAppContext();
@@ -32,27 +34,42 @@ const SavedPinProfile = ({ id }: { id: string }) => {
           isPrivate = true;
         }
 
+        setIsLoading(true);
         const res = await handleListBoardsByUser({
           user_id: id,
           isPrivate: isPrivate ? "true" : "false",
           access_token,
         });
-        setData(res.data);
+        if (res.data) {
+          setData(res.data);
+        }
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, [access_token, id, isProfile, user]);
 
-  console.log("saved");
+  if (isLoading)
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {[...Array(6)].map((_, index) => (
+          <div key={index} className="relative overflow-hidden">
+            <Skeleton className="w-full h-[168px] mb-1 rounded-lg"></Skeleton>
+            <Skeleton className="w-full h-10 rounded-lg"></Skeleton>
+          </div>
+        ))}
+      </div>
+    );
 
   return (
-    <div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {data &&
-          data.map((board) => (
+    <>
+      {data.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {data.map((board) => (
             <div
               key={board.id}
               className="relative overflow-hidden group cursor-pointer"
@@ -94,7 +111,15 @@ const SavedPinProfile = ({ id }: { id: string }) => {
               </div>
             </div>
           ))}
-      </div>
+        </div>
+      ) : null}
+      {data.length === 0 && !isLoading ? (
+        <div className="flex items-center justify-center mt-4">
+          <p className="text-muted-foreground">
+            {isProfile ? "You" : "This user"} have not saved any boards yet.
+          </p>
+        </div>
+      ) : null}
       <Separator className="my-10" />
       <div className="flex items-center justify-between">
         <div>
@@ -108,7 +133,7 @@ const SavedPinProfile = ({ id }: { id: string }) => {
         </div>
         <Button onClick={handleRedirectToRestoreBoard}>Restore Boards</Button>
       </div>
-    </div>
+    </>
   );
 };
 

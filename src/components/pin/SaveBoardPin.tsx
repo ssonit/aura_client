@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Check, Plus } from "lucide-react";
+import { Check, Plus, RotateCcw } from "lucide-react";
 import { Board } from "@/types/board";
 import { handleListBoardsByUser, handleSaveBoardPin } from "@/actions/pins";
 import { useAppContext } from "@/contexts/app-provider";
@@ -25,28 +25,34 @@ export default function SaveBoardPin({ pinId }: { pinId: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [boards, setBoards] = useState<Board[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAppContext();
+  const { user, handleModalOpen } = useAppContext();
+
+  async function fetchBoards() {
+    setIsLoading(true);
+    try {
+      const response = await handleListBoardsByUser({
+        user_id: user?.id,
+        isPrivate: "true",
+        access_token,
+      });
+      setBoards(
+        response.data.filter((board) => board.type !== BoardType.AllPins)
+      );
+    } catch (error) {
+      console.error("Failed to fetch boards", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function fetchBoards() {
-      setIsLoading(true);
-      try {
-        const response = await handleListBoardsByUser({
-          user_id: user?.id,
-          isPrivate: "true",
-          access_token,
-        });
-        setBoards(
-          response.data.filter((board) => board.type !== BoardType.AllPins)
-        );
-      } catch (error) {
-        console.error("Failed to fetch boards", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
     fetchBoards();
-  }, [access_token, user?.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, access_token]);
+
+  const handleReloadBoards = () => {
+    fetchBoards();
+  };
 
   const handleSave = async () => {
     if (selectedBoard) {
@@ -76,7 +82,18 @@ export default function SaveBoardPin({ pinId }: { pinId: string }) {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80">
         <div className="space-y-4">
-          <h3 className="font-medium leading-none text-center text-lg">Save</h3>
+          <div className="flex items-center justify-between">
+            <h3 className="font-bold leading-none text-center text-2xl">
+              Save
+            </h3>
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              onClick={handleReloadBoards}
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+          </div>
           <ScrollArea className="h-72 rounded-md">
             <div className="space-y-1">
               {boards.map((board) => (
@@ -99,7 +116,12 @@ export default function SaveBoardPin({ pinId }: { pinId: string }) {
             </div>
           </ScrollArea>
           <div className="flex justify-between">
-            <Button variant="outline" size="sm" className="w-[49%]">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-[49%]"
+              onClick={() => handleModalOpen(true)}
+            >
               <Plus className="mr-2 h-4 w-4" />
               Create Board
             </Button>

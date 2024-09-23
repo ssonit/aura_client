@@ -38,6 +38,7 @@ export interface Pin {
   isLiked: boolean;
   created_at: string;
   updated_at: string;
+  deleted_at?: string;
 }
 
 export interface PinCreated {

@@ -1,4 +1,3 @@
-import AddBoardModal from "@/components/global/AddBoardModal";
 import InfoProfile from "@/components/profile/InfoProfile";
 import ProfileActions from "@/components/profile/ProfileActions";
 import ProfileTabs from "@/components/profile/ProfileTabs";
@@ -23,8 +22,6 @@ export default function ProfileLayout({
 
         {children}
       </main>
-
-      <AddBoardModal></AddBoardModal>
     </div>
   );
 }

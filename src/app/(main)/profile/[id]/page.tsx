@@ -1,4 +1,3 @@
-import AddBoardModal from "@/components/global/AddBoardModal";
 import InfoProfile from "@/components/profile/InfoProfile";
 
 const ProfilePage = ({ params }: { params: { id: string } }) => {
@@ -8,8 +7,6 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <InfoProfile id={id}></InfoProfile>
       </main>
-
-      <AddBoardModal></AddBoardModal>
     </div>
   );
 };

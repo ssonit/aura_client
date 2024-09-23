@@ -1,5 +1,5 @@
 import { Tab } from "@/constants";
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 
 const CreatedPinProfile = lazy(
   () => import("@/components/profile/CreatedPinProfile")
@@ -16,11 +16,7 @@ const ProfilePage = ({ params }: { params: { tab: Tab; id: string } }) => {
     [Tab.Created]: <CreatedPinProfile id={id}></CreatedPinProfile>,
   };
 
-  return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>}>{content[tab]}</Suspense>
-    </div>
-  );
+  return <div>{content[tab]}</div>;
 };
 
 export default ProfilePage;
