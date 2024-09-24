@@ -1,5 +1,6 @@
 import { handleListPins } from "@/actions/pins";
 import MasonryInfinityScroll from "@/components/global/MasonryInfinityScroll";
+import { SortType } from "@/constants";
 import { Photo } from "@/types/pin";
 import { dynamicBlurDataColor } from "@/utils/helpers";
 import { getCookie } from "cookies-next";
@@ -9,7 +10,7 @@ const HomePage = async () => {
   const access_token = getCookie("access_token", { cookies }) as string;
 
   const res = await handleListPins(1, 20, access_token, {
-    sort: "desc",
+    sort: SortType.Desc,
   });
 
   if (!res.data) return null;
@@ -29,7 +30,7 @@ const HomePage = async () => {
   );
 
   return (
-    <main className="bg-muted/40 py-6 md:py-12 flex-1">
+    <main className="bg-muted/40 py-6 md:py-12 flex-1 min-h-screen">
       <div className="container mx-auto md:px-6">
         <MasonryInfinityScroll initData={pins} />
       </div>

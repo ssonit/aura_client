@@ -10,4 +10,14 @@ export enum Tab {
 export const BoardType = {
   AllPins: "all_pins",
   Custom: "custom",
-};
+} as const;
+
+export const MasonryType = {
+  Home: "home",
+  Search: "search",
+} as const;
+
+export const SortType = {
+  Asc: "asc",
+  Desc: "desc",
+} as const;
