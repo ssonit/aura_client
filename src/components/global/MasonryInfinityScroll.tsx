@@ -108,7 +108,7 @@ const MasonryInfinityScroll = ({
     <>
       {isClient && (
         <div className="w-full">
-          <MasonicColumns data={data} />
+          <MasonicColumns data={data} itemKey={q ? q : MasonryType.Home} />
           <section className="flex justify-center items-center w-full mt-20">
             <div ref={ref}></div>
           </section>

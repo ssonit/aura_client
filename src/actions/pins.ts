@@ -56,7 +56,9 @@ export const handleListPins = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${access_token}`,
       },
-      cache: "no-store",
+      next: {
+        tags: ["pin-list"],
+      },
     }
   );
   const data = await res.json();
@@ -99,6 +101,8 @@ export const handlePinCreated = async (
     },
     body: JSON.stringify(payload),
   });
+
+  revalidateTag("pin-list");
 
   const data = await res.json();
 
