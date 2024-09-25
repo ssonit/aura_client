@@ -31,15 +31,15 @@ const formSchema = z.object({
 });
 
 const ideas = [
-  { name: "Anime", image: "/assets/e9e9e9.jpg" },
-  { name: "Sport", image: "/assets/e9e9e9.jpg" },
-  { name: "Manga", image: "/assets/e9e9e9.jpg" },
+  { name: "Anime", image: "/assets/yuki.jpg" },
+  { name: "Sport", image: "/assets/sport.jpg" },
+  { name: "Manhua", image: "/assets/P_19.jpg" },
   {
     name: "Game",
-    image: "/assets/e9e9e9.jpg",
+    image: "/assets/shorekeeper.jpg",
   },
-  { name: "Trang phục", image: "/assets/e9e9e9.jpg" },
-  { name: "Hài hước", image: "/assets/e9e9e9.jpg" },
+  { name: "Trang phục", image: "/assets/trangphuc.jpg" },
+  { name: "Hài hước", image: "/assets/haihuoc.jpg" },
 ];
 
 const suggestions = [
@@ -82,10 +82,6 @@ const SearchPin = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    handleSearch(values.q);
-  }
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -96,6 +92,10 @@ const SearchPin = () => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    handleSearch(values.q);
+  }
 
   const handleSearch = (q: string) => {
     router.push(`/search?q=${q}`);

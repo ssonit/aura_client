@@ -19,7 +19,7 @@ const SearchPinPage = async ({
 
   const res = await handleListPins(1, 20, access_token, {
     sort: SortType.Desc,
-    title: q,
+    keyword: q,
   });
 
   if (!res.data)

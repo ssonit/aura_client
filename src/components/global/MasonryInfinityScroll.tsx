@@ -1,7 +1,7 @@
 "use client";
 
 import { useInView } from "react-intersection-observer";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import MasonicColumns from "./MasonicColumns";
 import { Photo } from "@/types/pin";
 import { dynamicBlurDataColor } from "@/utils/helpers";
@@ -37,9 +37,11 @@ const MasonryInfinityScroll = ({
   const access_token = getCookie("access_token") as string;
 
   useEffect(() => {
-    setData(initData);
-    setPage(2); // Reset page for new query
-    setHasMoreData(true); // Reset the end of data flag for new query
+    if (initData) {
+      setData(initData);
+      setPage(2); // Reset page for new query
+      setHasMoreData(true); // Reset the end of data flag for new query
+    }
   }, [initData]);
 
   async function fetchData() {
@@ -51,7 +53,7 @@ const MasonryInfinityScroll = ({
       };
 
       if (type === MasonryType.Search && q) {
-        filter["title"] = q;
+        filter["keyword"] = q;
       }
 
       const res = await handleListPins(page, 20, access_token, filter);

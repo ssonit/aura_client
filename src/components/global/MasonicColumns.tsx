@@ -12,10 +12,14 @@ const MasonicColumns = ({ data }: { data: Photo[] }) => {
     setIsClient(true);
   }, []);
 
+  console.log(data, "data");
+
   return (
     <>
       {isClient && (
         <Masonry
+          // key={data.length}
+          itemKey={(item, index) => item.id + "-" + index}
           items={data}
           columnGutter={16}
           columnWidth={236}

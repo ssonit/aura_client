@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { ImageIcon, LinkIcon } from "lucide-react";
+import { ImageIcon, LinkIcon, X } from "lucide-react";
 import ImagePreview from "./ImagePreview";
 import { isImageURL } from "@/utils/helpers";
 import { Board } from "@/types/board";
@@ -40,6 +40,7 @@ const formSchema = z.object({
   imageUrl: z.string(),
   linkUrl: z.string().url().optional(),
   selectedBoard: z.string(),
+  tag: z.string().optional(),
 });
 
 interface Props {
@@ -55,6 +56,7 @@ const PinForm = ({ initData, boards }: Props) => {
   const router = useRouter();
   const access_token = getCookie("access_token") as string;
   const { user, handleModalSoftDeletePin } = useAppContext();
+  const [tags, setTags] = useState<string[]>([]);
   const [isUrlInput, setIsUrlInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -67,6 +69,7 @@ const PinForm = ({ initData, boards }: Props) => {
         imageUrl: initData.imageUrl,
         linkUrl: initData.linkUrl,
         selectedBoard: initData.selectedBoard,
+        tag: "",
       }
     : {
         title: "",
@@ -74,6 +77,7 @@ const PinForm = ({ initData, boards }: Props) => {
         imageUrl: "",
         linkUrl: "",
         selectedBoard: "",
+        tag: "",
       };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -91,7 +95,19 @@ const PinForm = ({ initData, boards }: Props) => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
+  const handleAddTag = (tag: string) => {
+    if (!tags.includes(tag)) {
+      setTags([...tags, tag]);
+      form.setValue("tag", "");
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log({ values, tags });
     if (!access_token) {
       toast({
         title: "You need to login first!",
@@ -112,6 +128,14 @@ const PinForm = ({ initData, boards }: Props) => {
       });
       return;
     }
+
+    if (tags.length <= 0) {
+      toast({
+        title: "You need to add at least one tag!",
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       if (initData && initData.pin_id) {
@@ -149,6 +173,7 @@ const PinForm = ({ initData, boards }: Props) => {
               board_id: values.selectedBoard,
               link_url: values.linkUrl,
               media_id: resUpload.data.id,
+              tags,
             },
             access_token
           );
@@ -171,10 +196,24 @@ const PinForm = ({ initData, boards }: Props) => {
       router.refresh();
     }
   }
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
+            // Kiểm tra nếu input hiện tại là trường tag
+            if (e.target.name === "tag") {
+              e.preventDefault(); // Ngăn việc submit form khi nhấn Enter trong input tag
+              const tagValue = form.getValues("tag");
+              if (tagValue) {
+                const trimTagValue = tagValue.trim();
+                handleAddTag(trimTagValue); // Thêm tag nếu có giá trị hợp lệ
+              }
+            }
+          }
+        }}
         className="gap-8 flex justify-start "
       >
         {!initData && (
@@ -286,6 +325,41 @@ const PinForm = ({ initData, boards }: Props) => {
               </FormItem>
             )}
           />
+          {!initData ? (
+            <div>
+              <FormField
+                control={form.control}
+                name="tag"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tags</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter a tag" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {tags.map((tag, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center bg-primary text-primary-foreground px-2 py-1 rounded-full text-sm"
+                    >
+                      <p>{tag}</p>
+                      <button
+                        onClick={() => handleRemoveTag(tag)}
+                        className="ml-2 focus:outline-none"
+                        type="button"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : null}
           <FormField
             control={form.control}
             name="selectedBoard"
@@ -321,6 +395,7 @@ const PinForm = ({ initData, boards }: Props) => {
                 Delete
               </Button>
             ) : null}
+
             <Button type="submit" disabled={isLoading}>
               {initData ? "Save" : "Create"}
             </Button>

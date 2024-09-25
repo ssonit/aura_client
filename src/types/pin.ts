@@ -47,6 +47,7 @@ export interface PinCreated {
   media_id: string;
   link_url?: string;
   board_id: string;
+  tags: string[];
 }
 
 export interface PinDetail {
