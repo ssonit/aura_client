@@ -78,3 +78,10 @@ export interface BoardPinModalEdit {
   boardPinId: string;
   url: string;
 }
+
+export interface Suggestion {
+  id: string;
+  name: string;
+  count: number;
+  created_at: string;
+}

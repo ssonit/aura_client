@@ -25,6 +25,10 @@ import Image from "next/image";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Suggestion } from "@/types/pin";
+import { handleListSuggestions } from "@/actions/suggestion";
+import { getCookie } from "cookies-next";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const formSchema = z.object({
   q: z.string().min(2).max(50),
@@ -42,38 +46,16 @@ const ideas = [
   { name: "Hài hước", image: "/assets/haihuoc.jpg" },
 ];
 
-const suggestions = [
-  "Travel destinations",
-  "Adventure activities",
-  "Local cuisines",
-  "Historical landmarks",
-  "Natural wonders",
-  "Cultural experiences",
-  "Shopping destinations",
-  "Nightlife hotspots",
-  "Outdoor activities",
-  "Beach destinations",
-  "Mountain destinations",
-  "Desert destinations",
-  "Island destinations",
-  "City destinations",
-  "Village destinations",
-  "Food destinations",
-  "Drink destinations",
-  "Festival destinations",
-  "Xiangli Yao",
-  "Flower",
-  "Haikyuu",
-  "Pinterest UI",
-  "Design",
-  "Anime",
-];
-
 const SearchPin = () => {
   const router = useRouter();
+  const access_token = getCookie("access_token") as string;
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(true);
+
+  const debouncedQuery = useDebounce(searchTerm, 300);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -81,6 +63,28 @@ const SearchPin = () => {
       q: "",
     },
   });
+
+  useEffect(() => {
+    async function fetchSuggestions() {
+      try {
+        setIsLoading(true);
+        const res = await handleListSuggestions({
+          keyword: debouncedQuery,
+          access_token,
+        });
+
+        if (res.data) {
+          setSuggestions(res.data);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchSuggestions();
+  }, [access_token, debouncedQuery]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -101,6 +105,7 @@ const SearchPin = () => {
     router.push(`/search?q=${q}`);
     router.refresh();
     setIsOpen(false);
+    setSearchTerm("");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,7 +139,7 @@ const SearchPin = () => {
       </Button>
       <div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogContent className="sm:max-w-[1200px] min-h-[450px] rounded-2xl">
+          <DialogContent className="sm:max-w-[1200px] h-[450px] rounded-2xl">
             <div className="flex flex-col gap-4">
               <DialogTitle className="text-lg font-semibold">
                 Search Ideas
@@ -197,25 +202,19 @@ const SearchPin = () => {
                 )}
                 {showSuggestions && searchTerm && (
                   <ul className="space-y-2">
-                    {suggestions
-                      .filter((suggestion) =>
-                        suggestion
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                      )
-                      .map((suggestion, index) => (
-                        <li
-                          key={index}
-                          className="p-2 hover:bg-muted-foreground rounded cursor-pointer"
-                          onClick={() => {
-                            setSearchTerm(suggestion);
-                            handleSearch(suggestion);
-                            setShowSuggestions(true);
-                          }}
-                        >
-                          {suggestion}
-                        </li>
-                      ))}
+                    {suggestions.map((suggestion) => (
+                      <li
+                        key={suggestion.id}
+                        className="p-2 hover:bg-muted-foreground rounded cursor-pointer"
+                        onClick={() => {
+                          setSearchTerm(suggestion.name);
+                          handleSearch(suggestion.name);
+                          setShowSuggestions(true);
+                        }}
+                      >
+                        {suggestion.name}
+                      </li>
+                    ))}
                   </ul>
                 )}
               </ScrollArea>

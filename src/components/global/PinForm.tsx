@@ -103,6 +103,7 @@ const PinForm = ({ initData, boards }: Props) => {
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
+    if (isLoading) return;
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
@@ -129,13 +130,6 @@ const PinForm = ({ initData, boards }: Props) => {
       return;
     }
 
-    if (tags.length <= 0) {
-      toast({
-        title: "You need to add at least one tag!",
-      });
-      return;
-    }
-
     setIsLoading(true);
     try {
       if (initData && initData.pin_id) {
@@ -155,6 +149,12 @@ const PinForm = ({ initData, boards }: Props) => {
           title: "Pin updated successfully!",
         });
       } else {
+        if (tags.length <= 0) {
+          toast({
+            title: "You need to add at least one tag!",
+          });
+          return;
+        }
         let resUpload;
         if (file) {
           const formData = new FormData();
@@ -221,6 +221,7 @@ const PinForm = ({ initData, boards }: Props) => {
             <FormField
               control={form.control}
               name="imageUrl"
+              disabled={isLoading}
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center justify-between">
@@ -228,6 +229,7 @@ const PinForm = ({ initData, boards }: Props) => {
                     <div className="flex items-center space-x-2">
                       <ImageIcon className="h-4 w-4" />
                       <Switch
+                        disabled={isLoading}
                         id="image-input-mode"
                         checked={isUrlInput}
                         onCheckedChange={(checked) => {
@@ -248,6 +250,7 @@ const PinForm = ({ initData, boards }: Props) => {
                   <FormControl>
                     {isUrlInput ? (
                       <Input
+                        disabled={isLoading}
                         placeholder="Enter the image URL"
                         onChange={(e) => {
                           const url = e.target.value;
@@ -268,6 +271,7 @@ const PinForm = ({ initData, boards }: Props) => {
                         accept="image/*"
                         ref={fileInputRef}
                         className="hidden"
+                        disabled={isLoading}
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
@@ -286,6 +290,7 @@ const PinForm = ({ initData, boards }: Props) => {
         )}
         <div className="space-y-4 flex-[3]">
           <FormField
+            disabled={isLoading}
             control={form.control}
             name="title"
             render={({ field }) => (
@@ -299,6 +304,7 @@ const PinForm = ({ initData, boards }: Props) => {
           />
           <FormField
             control={form.control}
+            disabled={isLoading}
             name="description"
             render={({ field }) => (
               <FormItem>
@@ -316,6 +322,7 @@ const PinForm = ({ initData, boards }: Props) => {
           <FormField
             control={form.control}
             name="linkUrl"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Link URL</FormLabel>
@@ -330,6 +337,7 @@ const PinForm = ({ initData, boards }: Props) => {
               <FormField
                 control={form.control}
                 name="tag"
+                disabled={isLoading}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tags</FormLabel>
@@ -363,10 +371,15 @@ const PinForm = ({ initData, boards }: Props) => {
           <FormField
             control={form.control}
             name="selectedBoard"
+            disabled={isLoading}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Board</FormLabel>
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select
+                  disabled={isLoading}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a board" />

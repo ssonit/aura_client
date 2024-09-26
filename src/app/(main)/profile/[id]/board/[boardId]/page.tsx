@@ -4,6 +4,7 @@ import MasonryBoardPin from "@/components/global/MasonryBoardPin";
 import UpdateBoardModal from "@/components/global/UpdateBoardModal";
 import BoardPinEditModal from "@/components/profile/BoardPinEditModal";
 import DropdownProfileBoard from "@/components/profile/DropdownProfileBoard";
+import HeadProfileBoard from "@/components/profile/HeadProfileBoard";
 import { Button } from "@/components/ui/button";
 import { BoardType } from "@/constants";
 import { cn } from "@/lib/utils";
@@ -43,12 +44,12 @@ const ListPinInBoard = async ({ params }: { params: { boardId: string } }) => {
 
   return (
     <div className="mt-10">
-      <div className="flex items-center gap-3 justify-center">
-        <h3 className="font-bold text-3xl">{resBoardItem.data.name}</h3>
-        {resBoardItem.data.type !== BoardType.AllPins && (
-          <DropdownProfileBoard></DropdownProfileBoard>
-        )}
-      </div>
+      {resBoardItem.data && (
+        <HeadProfileBoard
+          name={resBoardItem.data.name}
+          type={resBoardItem.data.type}
+        ></HeadProfileBoard>
+      )}
       <div
         className={cn({
           "mt-10": pins.length === 0,
