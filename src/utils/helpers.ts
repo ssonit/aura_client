@@ -126,3 +126,7 @@ export function formatDate(dateString: string): string {
     minute: "2-digit",
   });
 }
+
+export function getExtension(filename: string) {
+  return filename.split(".").pop();
+}

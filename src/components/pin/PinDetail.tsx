@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MoreHorizontal } from "lucide-react";
+import { Download, MoreHorizontal } from "lucide-react";
 import { Pin } from "@/types/pin";
 import { useRouter } from "next/navigation";
 import SocialShare from "@/components/global/SocialShare";
@@ -14,6 +14,7 @@ import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 import { Comment } from "@/types/comment";
 import { handleListComments } from "@/actions/comment";
+import { getExtension } from "@/utils/helpers";
 
 const PinDetail = ({ data }: { data: Pin }) => {
   const router = useRouter();
@@ -31,6 +32,19 @@ const PinDetail = ({ data }: { data: Pin }) => {
 
   const handleRemoveComment = (commentId: string) => {
     setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+  };
+
+  const handleDownload = async (imageUrl: string, name: string) => {
+    const res = await fetch(imageUrl);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name + "." + getExtension(imageUrl);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   useEffect(() => {
@@ -65,14 +79,15 @@ const PinDetail = ({ data }: { data: Pin }) => {
                 like={data.isLiked}
                 pinId={data.id}
               ></LikePinButton>
+              <SocialShare></SocialShare>
               <Button
                 className="rounded-full bg-transparent hover:bg-foreground border-none"
                 variant="outline"
                 size="icon"
+                onClick={() => handleDownload(data.media.url, data.title)}
               >
-                <MoreHorizontal className="h-4 w-4 stroke-black fill-black" />
+                <Download className="h-4 w-4 stroke-black" />
               </Button>
-              <SocialShare></SocialShare>
             </div>
             <SaveBoardPin pinId={data.id}></SaveBoardPin>
           </div>
