@@ -26,7 +26,7 @@ const formSchema = z.object({
   confirmPassword: z.string().min(6),
 });
 
-const RegisterForm = () => {
+const RegisterForm = ({ email }: { email: string }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -35,7 +35,7 @@ const RegisterForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
-      email: "",
+      email: email,
       password: "",
       confirmPassword: "",
     },

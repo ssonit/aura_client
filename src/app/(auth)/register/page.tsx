@@ -9,7 +9,13 @@ import {
 import Link from "next/link";
 import RegisterForm from "@/components/global/RegisterForm";
 
-const RegisterPage = () => {
+const RegisterPage = ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) => {
+  const q = (searchParams["email"] as string) ?? "";
+
   return (
     <div className="flex-col h-screen flex items-center justify-center relative">
       <Card className="w-full max-w-md mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -18,7 +24,7 @@ const RegisterPage = () => {
           <CardDescription>Create a new account to get started</CardDescription>
         </CardHeader>
         <CardContent>
-          <RegisterForm></RegisterForm>
+          <RegisterForm email={q}></RegisterForm>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">

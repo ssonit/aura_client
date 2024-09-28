@@ -233,7 +233,7 @@ const PinForm = ({ initData, boards }: Props) => {
                         id="image-input-mode"
                         checked={isUrlInput}
                         onCheckedChange={(checked) => {
-                          setIsUrlInput(checked);
+                          setIsUrlInput(false);
                           handleRemoveImage();
                         }}
                       />
