@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Button } from "@/components/ui/button";
-import { Link, MessageCircle, Share } from "lucide-react";
+import { Link, MessageCircle, Pin, Share } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import Icons from "./icons";
 
@@ -45,13 +45,46 @@ const SocialShare = () => {
             <Link className="h-5 w-5" />
             <span className="sr-only">Copy link</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className="p-2 focus:bg-accent focus:text-accent-foreground cursor-pointer">
-            <MessageCircle className="h-5 w-5" />
-            <span className="sr-only">Share on Messenger</span>
+          <DropdownMenuItem
+            asChild
+            className="p-2 focus:bg-accent focus:text-accent-foreground cursor-pointer"
+          >
+            <a
+              href={`https://www.pinterest.com/pin/create/button/?url=${window.location.href}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Pin className="h-5 w-5" />
+              <span className="sr-only">Share on Pinterest</span>
+            </a>
           </DropdownMenuItem>
-          <DropdownMenuItem className="p-2 focus:bg-accent focus:text-accent-foreground cursor-pointer">
-            <Icons.Facebook className="h-5 w-5 text-white" />
-            <span className="sr-only">Share on Facebook</span>
+          <DropdownMenuItem
+            asChild
+            className="p-2 focus:bg-accent focus:text-accent-foreground cursor-pointer"
+          >
+            <a
+              href={`fb-messenger://share/?link=${encodeURIComponent(
+                window.location.href
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MessageCircle className="h-5 w-5" />
+              <span className="sr-only">Share on Messenger</span>
+            </a>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            asChild
+            className="p-2 focus:bg-accent focus:text-accent-foreground cursor-pointer"
+          >
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icons.Facebook className="h-5 w-5 text-white" />
+              <span className="sr-only">Share on Facebook</span>
+            </a>
           </DropdownMenuItem>
         </div>
       </DropdownMenuContent>
