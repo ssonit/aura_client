@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import MarketingForm from "@/components/global/MarketingForm";
+import { ImageIcon } from "lucide-react";
 
 const discover = [
   {
@@ -77,10 +78,20 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center">
-        <Link className="flex items-center justify-center" href="#">
+        <Link
+          href="/home"
+          className="flex items-center gap-2 text-lg font-semibold"
+          prefetch={false}
+        >
+          <div className="flex items-center gap-2">
+            <ImageIcon className="w-8 h-8 text-red-400" />
+            <h1 className="text-2xl font-bold px-1 text-red-400">Aura</h1>
+          </div>
+        </Link>
+        {/* <Link className="flex items-center justify-center" href="#">
           <PinIcon className="h-6 w-6 text-red-500" />
           <span className="ml-2 text-2xl font-bold text-red-500">PinSpire</span>
-        </Link>
+        </Link> */}
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link
             className="text-sm font-medium hover:underline underline-offset-4"

@@ -13,8 +13,8 @@ const HeaderPin = () => {
         prefetch={false}
       >
         <div className="flex items-center gap-2">
-          <ImageIcon className="w-8 h-8 text-primary" />
-          <h1 className="text-2xl font-bold px-1">Aura</h1>
+          <ImageIcon className="w-8 h-8 text-red-400" />
+          <h1 className="text-2xl font-bold px-1 text-red-400">Aura</h1>
         </div>
       </Link>
       <SearchPin></SearchPin>
