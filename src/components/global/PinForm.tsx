@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -25,7 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ImageIcon, LinkIcon, X } from "lucide-react";
 import ImagePreview from "./ImagePreview";
-import { isImageURL } from "@/utils/helpers";
+import { dynamicBlurDataUrl, isImageURL } from "@/utils/helpers";
 import { Board } from "@/types/board";
 import { useToast } from "@/components/ui/use-toast";
 import { handleUploadImage } from "@/actions/upload";
@@ -33,6 +33,7 @@ import { getCookie } from "cookies-next";
 import { handlePinCreated, handleUpdatePin } from "@/actions/pins";
 import { useAppContext } from "@/contexts/app-provider";
 import { useRouter } from "next/navigation";
+import * as nsfwjs from "nsfwjs";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
@@ -60,6 +61,8 @@ const PinForm = ({ initData, boards }: Props) => {
   const [isUrlInput, setIsUrlInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [model, setModel] = useState<nsfwjs.NSFWJS | null>(null);
+  const [isValid, setIsValid] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const defaultValues = initData
@@ -85,7 +88,16 @@ const PinForm = ({ initData, boards }: Props) => {
     defaultValues,
   });
 
+  useEffect(() => {
+    const loadModel = async () => {
+      const loadedModel = await nsfwjs.load();
+      setModel(loadedModel);
+    };
+    loadModel();
+  }, []);
+
   const handleRemoveImage = () => {
+    if (isLoading) return;
     setFile(null);
     form.setValue("imageUrl", "");
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -106,6 +118,40 @@ const PinForm = ({ initData, boards }: Props) => {
     if (isLoading) return;
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
+
+  const checkContent = useCallback(
+    async (imageUrl: string) => {
+      if (!model) return;
+      setIsLoading(true);
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = async () => {
+        try {
+          const predictions = await model.classify(img);
+          const explicitScore =
+            predictions.find(
+              (prediction) =>
+                prediction.className === "Porn" ||
+                prediction.className === "Hentai"
+            )?.probability || 0;
+
+          if (explicitScore < 0.5) {
+            form.setValue("imageUrl", imageUrl);
+            setIsValid(true);
+          } else {
+            form.setValue("imageUrl", "/assets/blur.jpg");
+            setIsValid(false);
+          }
+        } catch (error) {
+          console.error("Error checking content:", error);
+          setIsValid(false);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+    },
+    [form, model]
+  );
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log({ values, tags });
@@ -132,6 +178,7 @@ const PinForm = ({ initData, boards }: Props) => {
 
     setIsLoading(true);
     try {
+      // Update
       if (initData && initData.pin_id) {
         await handleUpdatePin({
           id: initData.pin_id,
@@ -149,9 +196,17 @@ const PinForm = ({ initData, boards }: Props) => {
           title: "Pin updated successfully!",
         });
       } else {
+        // Create
         if (tags.length <= 0) {
           toast({
             title: "You need to add at least one tag!",
+          });
+          return;
+        }
+        if (!isValid) {
+          toast({
+            title: "This image contains NSFW content and cannot be uploaded.",
+            className: "text-red-500",
           });
           return;
         }
@@ -221,7 +276,6 @@ const PinForm = ({ initData, boards }: Props) => {
             <FormField
               control={form.control}
               name="imageUrl"
-              disabled={isLoading}
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center justify-between">
@@ -276,7 +330,7 @@ const PinForm = ({ initData, boards }: Props) => {
                           const file = e.target.files?.[0];
                           if (file) {
                             const url = URL.createObjectURL(file);
-                            field.onChange(url);
+                            checkContent(url);
                             setFile(file);
                           }
                         }}
