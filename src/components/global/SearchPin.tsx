@@ -6,15 +6,7 @@ import { SearchIcon } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import {
   Dialog,
   DialogContent,
@@ -83,8 +75,10 @@ const SearchPin = () => {
       }
     }
 
-    fetchSuggestions();
-  }, [access_token, debouncedQuery]);
+    if (isOpen) {
+      fetchSuggestions();
+    }
+  }, [access_token, debouncedQuery, isOpen]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

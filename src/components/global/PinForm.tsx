@@ -25,7 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ImageIcon, LinkIcon, X } from "lucide-react";
 import ImagePreview from "./ImagePreview";
-import { dynamicBlurDataUrl, isImageURL } from "@/utils/helpers";
+import { isImageURL } from "@/utils/helpers";
 import { Board } from "@/types/board";
 import { useToast } from "@/components/ui/use-toast";
 import { handleUploadImage } from "@/actions/upload";
@@ -93,8 +93,10 @@ const PinForm = ({ initData, boards }: Props) => {
       const loadedModel = await nsfwjs.load();
       setModel(loadedModel);
     };
-    loadModel();
-  }, []);
+    if (!initData) {
+      loadModel();
+    }
+  }, [initData]);
 
   const handleRemoveImage = () => {
     if (isLoading) return;
