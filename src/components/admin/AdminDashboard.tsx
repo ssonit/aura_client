@@ -3,11 +3,17 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("users");
+  const pathname = usePathname();
+
+  const [activeTab, setActiveTab] = useState(() => {
+    if (pathname.includes("pins")) return "pins";
+    if (pathname.includes("tags")) return "tags";
+    else return "users";
+  });
 
   return (
     <div>

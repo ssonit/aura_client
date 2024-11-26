@@ -15,20 +15,17 @@ import { Pagination } from "./Pagination";
 import { Suggestion } from "@/types/pin";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getCookie } from "cookies-next";
-import { handleListTags } from "@/actions/tags";
-
-// Mock data
-const initialTags = Array.from({ length: 50 }, (_, i) => ({
-  id: i + 1,
-  name: `tag${i + 1}`,
-}));
+import { handleAddTag, handleDeleteTag, handleListTags } from "@/actions/tags";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function TagManagement() {
   const access_token = getCookie("access_token") as string;
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { toast } = useToast();
   const [listTags, setListTags] = useState<Suggestion[]>([]);
   const [totalItems, setTotalItems] = useState(0);
+  const [tag, setTag] = useState("");
 
   const pageNumber = Number(searchParams.get("page")) || 1;
   const limitNumber = Number(searchParams.get("limit")) || 5;
@@ -38,33 +35,69 @@ export default function TagManagement() {
     [totalItems, limitNumber]
   );
 
-  useEffect(() => {
-    async function fetchData() {
-      const res = await handleListTags({
-        access_token,
-        page: pageNumber,
-        limit: limitNumber,
-      });
-      if (res.data) {
-        setListTags(res.data);
-        setTotalItems(res.paging.total);
-      }
+  async function fetchData() {
+    const res = await handleListTags({
+      access_token,
+      page: pageNumber,
+      limit: limitNumber,
+    });
+    if (res.data) {
+      setListTags(res.data);
+      setTotalItems(res.paging.total);
     }
+  }
+
+  useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [access_token, limitNumber, pageNumber]);
 
   const handlePageChange = (newPage: number) => {
     router.push(`/admin/tags?page=${newPage}&limit=${limitNumber}`);
   };
 
-  const addTag = () => {};
+  const addTag = async () => {
+    try {
+      await handleAddTag({ access_token, tag });
+      setTag("");
+      router.push(`/admin/tags?page=1&limit=${limitNumber}`);
+      router.refresh();
+      fetchData();
+      toast({
+        title: "Tag added",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const deleteTag = (id: string) => {};
+  const deleteTag = async (id: string) => {
+    try {
+      await handleDeleteTag({ access_token, id });
+      router.push(`/admin/tags?page=1&limit=${limitNumber}`);
+      router.refresh();
+      fetchData();
+      toast({
+        title: "Tag deleted",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">Tag Management</h2>
-
+      <div className="flex space-x-4 mb-4">
+        <Input
+          placeholder="Tag name"
+          value={tag}
+          onChange={(e) => {
+            setTag(e.target.value);
+          }}
+        />
+        <Button onClick={addTag}>Add Tag</Button>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>

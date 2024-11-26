@@ -35,3 +35,50 @@ export const handleListTags = async ({
 
   return data as ListTagsResponse;
 };
+
+export const handleAddTag = async ({
+  access_token,
+  tag,
+}: {
+  access_token: string;
+  tag: string;
+}) => {
+  const res = await fetch(BASE_URL + "/pin/tags/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    body: JSON.stringify({ tags: [tag] }),
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};
+
+export const handleDeleteTag = async ({
+  access_token,
+  id,
+}: {
+  access_token: string;
+  id: string;
+}) => {
+  const res = await fetch(BASE_URL + `/pin/tags/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data;
+};
