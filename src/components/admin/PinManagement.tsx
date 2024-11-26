@@ -2,8 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
   TableBody,
@@ -28,14 +26,6 @@ export default function PinManagement() {
   const pageNumber = Number(searchParams.get("page")) || 1;
   const limitNumber = Number(searchParams.get("limit")) || 5;
 
-  const [newPin, setNewPin] = useState({
-    title: "",
-    description: "",
-    image: "",
-    tags: "",
-    board: "",
-  });
-
   const totalPages = useMemo(
     () => Math.ceil(totalItems / limitNumber),
     [totalItems, limitNumber]
@@ -56,38 +46,11 @@ export default function PinManagement() {
     router.push(`/admin/pins?page=${newPage}&limit=${limitNumber}`);
   };
 
-  const addPin = () => {};
-
   const deletePin = (id: string) => {};
 
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">Pin Management</h2>
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <Input
-          placeholder="Title"
-          value={newPin.title}
-          onChange={(e) => setNewPin({ ...newPin, title: e.target.value })}
-        />
-        <Input
-          placeholder="Image URL"
-          value={newPin.image}
-          onChange={(e) => setNewPin({ ...newPin, image: e.target.value })}
-        />
-        <Textarea
-          placeholder="Description"
-          value={newPin.description}
-          onChange={(e) =>
-            setNewPin({ ...newPin, description: e.target.value })
-          }
-        />
-        <Input
-          placeholder="Tags (comma-separated)"
-          value={newPin.tags}
-          onChange={(e) => setNewPin({ ...newPin, tags: e.target.value })}
-        />
-        <Button onClick={addPin}>Add Pin</Button>
-      </div>
       <Table>
         <TableHeader>
           <TableRow>
