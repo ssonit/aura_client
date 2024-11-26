@@ -85,3 +85,13 @@ export interface Suggestion {
   count: number;
   created_at: string;
 }
+
+export interface ListTagsResponse {
+  data: Suggestion[];
+  paging: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+  filter: any;
+}

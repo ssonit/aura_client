@@ -1,5 +1,6 @@
-import { handleListPins } from "@/actions/pins";
+import { handleListBoardsByUser, handleListPins } from "@/actions/pins";
 import MasonryInfinityScroll from "@/components/global/MasonryInfinityScroll";
+import ListBoardHome from "@/components/pin/ListBoardHome";
 import { SortType } from "@/constants";
 import { Photo } from "@/types/pin";
 import { dynamicBlurDataColor } from "@/utils/helpers";
@@ -30,8 +31,9 @@ const HomePage = async () => {
   );
 
   return (
-    <main className="bg-muted/40 py-6 md:py-12 flex-1 min-h-screen">
+    <main className="bg-muted/40 py-6 md:py-6 flex-1 min-h-screen">
       <div className="container mx-auto md:px-6">
+        <ListBoardHome></ListBoardHome>
         <MasonryInfinityScroll initData={pins} />
       </div>
     </main>

@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import MarketingForm from "@/components/global/MarketingForm";
 import { ImageIcon } from "lucide-react";
+import { CarouselPlugin } from "@/components/global/CarouselPlugin";
 
 const discover = [
   {
@@ -88,10 +89,6 @@ export default function LandingPage() {
             <h1 className="text-2xl font-bold px-1 text-red-400">Aura</h1>
           </div>
         </Link>
-        {/* <Link className="flex items-center justify-center" href="#">
-          <PinIcon className="h-6 w-6 text-red-500" />
-          <span className="ml-2 text-2xl font-bold text-red-500">PinSpire</span>
-        </Link> */}
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link
             className="text-sm font-medium hover:underline underline-offset-4"
@@ -121,8 +118,9 @@ export default function LandingPage() {
           </Button>
         </div>
       </header>
-      <main className="flex-1">
-        <section className="w-full py-10 md:py-24 lg:py-28 xl:py-32">
+      <main className="flex-1 mt-8">
+        <CarouselPlugin></CarouselPlugin>
+        <section className="w-full pt-10 md:py-24 lg:py-28 xl:pt-10">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
@@ -167,7 +165,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32">
+        <section className="w-full py-8 md:py-24 lg:pt-2">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               How PinSpire works
@@ -200,7 +198,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 ">
+        <section className="w-full py-8 md:py-24 lg:pt-2">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Explore popular categories
@@ -229,7 +227,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32">
+        <section className="w-full py-12 md:py-24 lg:py-2 lg:pb-10">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">

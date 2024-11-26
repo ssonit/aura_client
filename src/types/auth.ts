@@ -30,3 +30,13 @@ export interface AuthResponse {
 export interface UserResponse {
   data: User;
 }
+
+export interface ListUsersResponse {
+  data: User[];
+  paging: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+  filter: any;
+}

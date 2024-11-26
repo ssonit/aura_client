@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { z } from "zod";
+import { set, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,9 @@ import { handlePinCreated, handleUpdatePin } from "@/actions/pins";
 import { useAppContext } from "@/contexts/app-provider";
 import { useRouter } from "next/navigation";
 import * as nsfwjs from "nsfwjs";
+import { useDebounce } from "@uidotdev/usehooks";
+import { handleListSuggestions } from "@/actions/suggestion";
+import { Suggestion } from "@/types/pin";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
@@ -64,6 +67,26 @@ const PinForm = ({ initData, boards }: Props) => {
   const [model, setModel] = useState<nsfwjs.NSFWJS | null>(null);
   const [isValid, setIsValid] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [searchTag, setSearchTag] = useState("");
+  const [listSearchTag, setListSearchTag] = useState<Suggestion[]>([]);
+
+  const debounceSearchTag = useDebounce(searchTag, 500);
+
+  useEffect(() => {
+    async function handleListSearchTag() {
+      if (debounceSearchTag) {
+        const res = await handleListSuggestions({
+          keyword: debounceSearchTag,
+          access_token,
+        });
+        if (res.data) {
+          setListSearchTag(res.data);
+        }
+      }
+    }
+    handleListSearchTag();
+  }, [access_token, debounceSearchTag]);
 
   const defaultValues = initData
     ? {
@@ -113,6 +136,7 @@ const PinForm = ({ initData, boards }: Props) => {
     if (!tags.includes(tag)) {
       setTags([...tags, tag]);
       form.setValue("tag", "");
+      setListSearchTag([]);
     }
   };
 
@@ -134,14 +158,15 @@ const PinForm = ({ initData, boards }: Props) => {
             predictions.find(
               (prediction) =>
                 prediction.className === "Porn" ||
-                prediction.className === "Hentai"
+                prediction.className === "Hentai" ||
+                prediction.className === "Sexy"
             )?.probability || 0;
 
           if (explicitScore < 0.5) {
             form.setValue("imageUrl", imageUrl);
             setIsValid(true);
           } else {
-            form.setValue("imageUrl", "/assets/blur.jpg");
+            form.setValue("imageUrl", "/assets/warning.jpg");
             setIsValid(false);
           }
         } catch (error) {
@@ -259,17 +284,17 @@ const PinForm = ({ initData, boards }: Props) => {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         onKeyDown={(e) => {
-          if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
-            // Kiểm tra nếu input hiện tại là trường tag
-            if (e.target.name === "tag") {
-              e.preventDefault(); // Ngăn việc submit form khi nhấn Enter trong input tag
-              const tagValue = form.getValues("tag");
-              if (tagValue) {
-                const trimTagValue = tagValue.trim();
-                handleAddTag(trimTagValue); // Thêm tag nếu có giá trị hợp lệ
-              }
-            }
-          }
+          // if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
+          //   // Kiểm tra nếu input hiện tại là trường tag
+          //   if (e.target.name === "tag") {
+          //     e.preventDefault(); // Ngăn việc submit form khi nhấn Enter trong input tag
+          //     const tagValue = form.getValues("tag");
+          //     if (tagValue) {
+          //       const trimTagValue = tagValue.trim();
+          //       handleAddTag(trimTagValue); // Thêm tag nếu có giá trị hợp lệ
+          //     }
+          //   }
+          // }
         }}
         className="gap-8 flex justify-start "
       >
@@ -389,20 +414,42 @@ const PinForm = ({ initData, boards }: Props) => {
             )}
           />
           {!initData ? (
-            <div>
-              <FormField
-                control={form.control}
-                name="tag"
-                disabled={isLoading}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tags</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter a tag" {...field} />
-                    </FormControl>
-                  </FormItem>
+            <div className="relative">
+              <div className="relative">
+                <FormField
+                  control={form.control}
+                  name="tag"
+                  disabled={isLoading}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tags</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter a tag"
+                          {...field}
+                          onChange={(e) => {
+                            setSearchTag(e.target.value);
+                            field.onChange(e);
+                          }}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                {listSearchTag.length > 0 && debounceSearchTag && (
+                  <div className="border-2 absolute bottom-12 w-full bg-white rounded-md">
+                    {listSearchTag.map((tag) => (
+                      <div
+                        key={tag.id}
+                        className="cursor-pointer text-muted p-2 hover:bg-blue-400 rounded-md"
+                        onClick={() => handleAddTag(tag.name)}
+                      >
+                        {tag.name}
+                      </div>
+                    ))}
+                  </div>
                 )}
-              />
+              </div>
               {tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-4">
                   {tags.map((tag, index) => (

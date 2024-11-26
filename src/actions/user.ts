@@ -1,7 +1,7 @@
 "use server";
 
 import { BASE_URL } from "@/constants";
-import { UserResponse } from "@/types/auth";
+import { ListUsersResponse, UserResponse } from "@/types/auth";
 
 export const handleGetUser = async (id: string, access_token: string) => {
   const res = await fetch(BASE_URL + "/user/" + id, {
@@ -53,4 +53,38 @@ export const handleUpdateUser = async ({
   }
 
   return data as { message: string };
+};
+
+export const handleAdminListUsers = async ({
+  access_token,
+  page,
+  limit,
+}: {
+  access_token: string;
+  page: number;
+  limit: number;
+}) => {
+  const searchParams = {
+    page: page.toString(),
+    limit: limit.toString(),
+  };
+  const res = await fetch(
+    BASE_URL + "/user/admin/users?" + new URLSearchParams(searchParams),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: "no-store",
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data as ListUsersResponse;
 };
