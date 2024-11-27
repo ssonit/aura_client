@@ -37,7 +37,7 @@ const CommentInput = ({ pinId, handleAddComment }: CommentInputProps) => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!user) return;
+    if (!user || user.banned_at) return;
     try {
       setIsLoading(true);
       const { id } = await handleCreateComment({

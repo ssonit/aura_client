@@ -203,6 +203,13 @@ const PinForm = ({ initData, boards }: Props) => {
       return;
     }
 
+    if (user?.banned_at) {
+      toast({
+        title: "You have been banned!",
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       // Update

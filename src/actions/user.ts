@@ -88,3 +88,53 @@ export const handleAdminListUsers = async ({
 
   return data as ListUsersResponse;
 };
+
+export const handleAdminBannedUser = async ({
+  id,
+  access_token,
+}: {
+  id: string;
+  access_token: string;
+}) => {
+  const res = await fetch(BASE_URL + "/user/admin/banned/" + id, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    cache: "no-store",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data as { data: { message: string } };
+};
+
+export const handleAdminUnbannedUser = async ({
+  id,
+  access_token,
+}: {
+  id: string;
+  access_token: string;
+}) => {
+  const res = await fetch(BASE_URL + "/user/admin/unbanned/" + id, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    cache: "no-store",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data as { data: { message: string } };
+};

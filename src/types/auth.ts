@@ -10,6 +10,7 @@ export interface User {
   website: string;
   created_at: string;
   updated_at: string;
+  banned_at?: string;
 }
 
 export interface Token {
