@@ -1,9 +1,13 @@
+"use client";
 import TagManagement from "@/components/admin/TagManagement";
+import { Suspense } from "react";
 
 const AdminTags = () => {
   return (
     <div>
-      <TagManagement></TagManagement>
+      <Suspense fallback={<div>Loading...</div>}>
+        <TagManagement></TagManagement>
+      </Suspense>
     </div>
   );
 };

@@ -15,6 +15,7 @@ import { getCookie } from "cookies-next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Pin } from "@/types/pin";
 import { handleListPins } from "@/actions/pins";
+import { SortType } from "@/constants";
 
 export default function PinManagement() {
   const access_token = getCookie("access_token") as string;
@@ -33,7 +34,9 @@ export default function PinManagement() {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await handleListPins(pageNumber, limitNumber, access_token);
+      const res = await handleListPins(pageNumber, limitNumber, access_token, {
+        sort: SortType.Desc,
+      });
       if (res.data) {
         setListPins(res.data);
         setTotalItems(res.paging.total);

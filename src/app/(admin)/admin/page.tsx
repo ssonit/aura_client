@@ -1,9 +1,13 @@
+"use client";
 import UserManagement from "@/components/admin/UserManagement";
+import { Suspense } from "react";
 
-const AdminPage = async () => {
+const AdminPage = () => {
   return (
     <div>
-      <UserManagement></UserManagement>
+      <Suspense fallback={<div>Loading...</div>}>
+        <UserManagement></UserManagement>
+      </Suspense>
     </div>
   );
 };
