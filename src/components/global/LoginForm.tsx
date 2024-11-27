@@ -44,6 +44,14 @@ const LoginForm = () => {
     try {
       const result = await authApiRequest.login(values);
 
+      if (result.data?.banned_at) {
+        toast({
+          title: "You are banned",
+          className: "text-red-500",
+        });
+        return;
+      }
+
       const resultFromNextServer = await authApiRequest.authTokenNextServer(
         result.token
       );
