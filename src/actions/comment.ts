@@ -69,7 +69,7 @@ export const handleCreateComment = async ({
     throw data;
   }
 
-  return data as { id: string };
+  return data as { data: { id: string } };
 };
 
 export const handleDeleteComment = async ({

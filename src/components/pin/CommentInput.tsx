@@ -40,11 +40,14 @@ const CommentInput = ({ pinId, handleAddComment }: CommentInputProps) => {
     if (!user || user.banned_at) return;
     try {
       setIsLoading(true);
-      const { id } = await handleCreateComment({
+      const {
+        data: { id },
+      } = await handleCreateComment({
         pinId,
         content: values.comment,
         access_token,
       });
+      if (!id) return;
       handleAddComment({
         id,
         content: values.comment,

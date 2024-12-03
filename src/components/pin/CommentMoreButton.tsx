@@ -23,6 +23,7 @@ const CommentMoreButton = ({
   const access_token = getCookie("access_token") as string;
   const handleDelete = async () => {
     try {
+      if (!access_token || !commentId) return;
       await handleDeleteComment({
         commentId,
         access_token,
