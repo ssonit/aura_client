@@ -75,8 +75,11 @@ const HeaderAvatar = () => {
         >
           Recycle Pin
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          Notifications
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => router.push(`/generate`)}
+        >
+          Generate
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-red-600 p-0">
